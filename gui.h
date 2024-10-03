@@ -11,7 +11,7 @@
 #define BACK_BTN_VERT 75
 
 LV_IMAGE_DECLARE(cloud_symbol);
-LV_IMAGE_DECLACE(usb_symbol);
+LV_IMAGE_DECLARE(usb_symbol);
 
 /**
  * Start Screen
@@ -45,6 +45,9 @@ static lv_obj_t *new_proj_label_start_screen;
 /* Demo Button */
 static lv_obj_t *demo_btn_start_screen;
 static lv_obj_t *demo_label_start_screen;
+/* Quit Button */
+static lv_obj_t *quit_btn_start_screen;
+static lv_obj_t *quit_label_start_screen;
 /* Styles */
 static lv_style_t style_btn_start_screen;
 static lv_style_t style_label_start_screen;
@@ -263,6 +266,8 @@ static void cloud_file_explorer_cb(lv_event_t *e);
 
 static void file_selected_cb(lv_event_t *e);
 
+static void quit_cb(lv_event_t *e);
+
 /***** Demo Screen Functions *****/
 
 void open_demo_screen();
@@ -397,6 +402,8 @@ void demo_screen_style_init()
     lv_style_init(&style_label_demo_screen);
     lv_style_set_text_font(&style_label_demo_screen, &lv_font_montserrat_34);
     lv_style_set_text_color(&style_label_demo_screen, lv_palette_darken(COLOR_PALETTE, 5));
+
+    
 }
 
 void demo_popup_style_init()
@@ -594,6 +601,15 @@ void config_start_screen()
     lv_obj_add_style(demo_label_start_screen, &style_label_start_screen, 0);
     lv_label_set_text(demo_label_start_screen, "Demos");
     lv_obj_center(demo_label_start_screen);
+    /* Quit Button */
+    quit_btn_start_screen = lv_button_create(start_screen);
+    lv_obj_add_style(quit_btn_start_screen, &style_back_btn_demo_popup, 0);
+    lv_obj_add_style(quit_btn_start_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(quit_btn_start_screen, LV_GRID_ALIGN_START, 1, 1, LV_GRID_ALIGN_START, 1, 1);
+    quit_label_start_screen = lv_label_create(quit_btn_start_screen);
+    lv_obj_add_style(quit_label_start_screen, &style_back_label, 0);
+    lv_label_set_text(quit_label_start_screen, "Quit");
+    lv_obj_center(quit_label_start_screen);
 }
 
 void config_info_screen()
@@ -970,4 +986,12 @@ static void file_selected_cb(lv_event_t *e)
     if (lv_event_get_code(e) == LV_EVENT_CLICKED)
     {
     }
+}
+
+static void quit_cb(lv_event_t *e)
+{
+  if (lv_event_get_code(e) == LV_EVENT_CLICKED)
+  {
+    lv_sdl_quit();
+  }
 }
