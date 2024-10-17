@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include "lv_port_linux/lvgl/lvgl.h"
 #include "images/cloud_symbol.c"
 #include "images/usb_symbol.c"
@@ -12,6 +15,8 @@
 
 LV_IMAGE_DECLARE(cloud_symbol);
 LV_IMAGE_DECLARE(usb_symbol);
+
+lv_display_t *display;
 
 /**
  * Start Screen
@@ -268,6 +273,8 @@ static void file_selected_cb(lv_event_t *e);
 
 static void quit_cb(lv_event_t *e);
 
+static void sidebar_event_cb(lv_event_t *e);
+
 /***** Demo Screen Functions *****/
 
 void open_demo_screen();
@@ -301,6 +308,15 @@ void open_cloud_explorer();
 void config_usb_explorer();
 
 void config_cloud_explorer();
+
+/**************************
+ * Touch Screen and Mouse *
+ **************************/
+
+void input_init()
+{
+    lv_sdl_mouse_create();
+}
 
 /***********************
  * Function Definition *
@@ -606,6 +622,7 @@ void config_start_screen()
     lv_obj_add_style(quit_btn_start_screen, &style_back_btn_demo_popup, 0);
     lv_obj_add_style(quit_btn_start_screen, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(quit_btn_start_screen, LV_GRID_ALIGN_START, 1, 1, LV_GRID_ALIGN_START, 1, 1);
+    lv_obj_add_event_cb(quit_btn_start_screen, quit_cb, LV_EVENT_CLICKED, NULL);
     quit_label_start_screen = lv_label_create(quit_btn_start_screen);
     lv_obj_add_style(quit_label_start_screen, &style_back_label, 0);
     lv_label_set_text(quit_label_start_screen, "Quit");
@@ -869,9 +886,61 @@ void config_new_proj_screen()
 
 void config_usb_explorer()
 {
+    /* Set up file explorer */
     usb_file_explorer = lv_file_explorer_create(NULL);
     lv_file_explorer_set_sort(usb_file_explorer, LV_EXPLORER_SORT_KIND);
-    lv_file_explorer_open_dir(usb_file_explorer, "aidancase/");
+    lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide/");
+
+    char * envvar = "HOME";
+    char home_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(home_dir, "A:");
+    /* get the user's home directory from the HOME environment variable*/
+    strcat(home_dir, getenv(envvar));
+    LV_LOG_USER("home_dir: %s\n", home_dir);
+    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_HOME_DIR, home_dir);
+    char video_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(video_dir, home_dir);
+    strcat(video_dir, "/Videos");
+    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_VIDEO_DIR, video_dir);
+    char picture_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(picture_dir, home_dir);
+    strcat(picture_dir, "/Pictures");
+    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_PICTURES_DIR, picture_dir);
+    char music_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(music_dir, home_dir);
+    strcat(music_dir, "/Music");
+    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_MUSIC_DIR, music_dir);
+    char document_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(document_dir, home_dir);
+    strcat(document_dir, "/Documents");
+    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_DOCS_DIR, document_dir);
+
+    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_FS_DIR, "A:/");
+
+    /* Button for show/hide sidebar menu */
+    lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(usb_file_explorer);
+    lv_obj_t *file_explorer_header = lv_file_explorer_get_header(usb_file_explorer);
+    lv_obj_t *btn = lv_button_create(file_explorer_header);
+    lv_obj_set_size(btn, 30, 30);
+    lv_obj_set_style_radius(btn, 2, 0);
+    lv_obj_set_style_pad_all(btn, 4, 0);
+    lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
+    lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
+    lv_obj_add_event_cb(btn, sidebar_event_cb, LV_EVENT_VALUE_CHANGED, file_explorer_quick_access);
+    lv_obj_t *label = lv_label_create(btn);
+    lv_label_set_text(label, LV_SYMBOL_LIST);
+    lv_obj_center(label);
+
+    /* Button for backing out of file explorer */
+    lv_obj_t *close_btn = lv_button_create(file_explorer_header);
+    lv_obj_set_size(close_btn, 100, 50);
+    lv_obj_set_style_radius(close_btn, 2, 0);
+    lv_obj_set_style_pad_all(close_btn, 4, 0);
+    lv_obj_align(close_btn, LV_ALIGN_RIGHT_MID, 0, 0);
+    lv_obj_add_event_cb(close_btn, open_new_proj_screen, LV_EVENT_CLICKED, NULL);
+    lv_obj_t *close_label = lv_label_create(close_btn);
+    lv_label_set_text(close_label, "Close");
+    lv_obj_center(close_label);
 }
 
 void config_cloud_explorer()
@@ -994,4 +1063,23 @@ static void quit_cb(lv_event_t *e)
   {
     lv_sdl_quit();
   }
+}
+
+static void sidebar_event_cb(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t *btn = lv_event_get_target(e);
+    lv_obj_t *file_explorer = lv_event_get_user_data(e);
+
+    if (code == LV_EVENT_VALUE_CHANGED)
+    {
+        if (lv_obj_has_state(btn, LV_STATE_CHECKED))
+        {
+            lv_obj_add_flag(file_explorer, LV_OBJ_FLAG_HIDDEN);
+        }
+        else
+        {
+            lv_obj_remove_flag(file_explorer, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
 }
