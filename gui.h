@@ -917,9 +917,12 @@ void config_usb_explorer()
 
     lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_FS_DIR, "A:/");
 
+    lv_obj_add_event_cb(usb_file_explorer, file_selected_cb, LV_EVENT_ALL, NULL);
+
     /* Button for show/hide sidebar menu */
     lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(usb_file_explorer);
     lv_obj_t *file_explorer_header = lv_file_explorer_get_header(usb_file_explorer);
+    lv_obj_t *file_explorer_main = lv_file_explorer_get_file_table(usb_file_explorer);
     lv_obj_t *btn = lv_button_create(file_explorer_header);
     lv_obj_set_size(btn, 30, 30);
     lv_obj_set_style_radius(btn, 2, 0);
@@ -1105,8 +1108,14 @@ static void cloud_file_explorer_cb(lv_event_t *e)
 
 static void file_selected_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t *obj = lv_event_get_target(e);
+
+    if (lv_event_get_code(e) == LV_EVENT_VALUE_CHANGED)
     {
+        char *file_path = lv_file_explorer_get_current_path(obj);
+        char *file_name = lv_file_explorer_get_selected_file_name(obj);
+        LV_LOG_USER("%s%s", file_path, file_name);
     }
 }
 
