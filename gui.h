@@ -849,7 +849,7 @@ void config_new_proj_screen()
     usb_file_btn_new_proj_screen = lv_obj_create(new_proj_screen);
     lv_obj_add_style(usb_file_btn_new_proj_screen, &style_file_btn_new_proj_screen, 0);
     lv_obj_add_style(usb_file_btn_new_proj_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(usb_file_btn_new_proj_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 2, 1);
+    lv_obj_set_grid_cell(usb_file_btn_new_proj_screen, LV_GRID_ALIGN_STRETCH, 2, 3, LV_GRID_ALIGN_STRETCH, 2, 1);
     lv_obj_add_event_cb(usb_file_btn_new_proj_screen, usb_file_explorer_cb, LV_EVENT_CLICKED, NULL);
     usb_file_image_new_proj_screen = lv_image_create(usb_file_btn_new_proj_screen);
     lv_image_set_src(usb_file_image_new_proj_screen, &usb_symbol);
@@ -859,18 +859,18 @@ void config_new_proj_screen()
     lv_obj_set_align(usb_file_label_new_proj_screen, LV_ALIGN_BOTTOM_MID);
     lv_label_set_text(usb_file_label_new_proj_screen, "Select from USB");
     /* Cloud File Explorer Button */
-    cloud_file_btn_new_proj_screen = lv_obj_create(new_proj_screen);
-    lv_obj_add_style(cloud_file_btn_new_proj_screen, &style_file_btn_new_proj_screen, 0);
-    lv_obj_add_style(cloud_file_btn_new_proj_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(cloud_file_btn_new_proj_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 2, 1);
-    lv_obj_add_event_cb(cloud_file_btn_new_proj_screen, cloud_file_explorer_cb, LV_EVENT_CLICKED, NULL);
-    cloud_file_image_new_proj_screen = lv_image_create(cloud_file_btn_new_proj_screen);
-    lv_image_set_src(cloud_file_image_new_proj_screen, &cloud_symbol);
-    lv_obj_center(cloud_file_image_new_proj_screen);
-    cloud_file_label_new_proj_screen = lv_label_create(cloud_file_btn_new_proj_screen);
-    lv_obj_add_style(cloud_file_label_new_proj_screen, &style_file_label_new_proj_screen, 0);
-    lv_obj_set_align(cloud_file_label_new_proj_screen, LV_ALIGN_BOTTOM_MID);
-    lv_label_set_text(cloud_file_label_new_proj_screen, "Select from Cloud");
+    // cloud_file_btn_new_proj_screen = lv_obj_create(new_proj_screen);
+    // lv_obj_add_style(cloud_file_btn_new_proj_screen, &style_file_btn_new_proj_screen, 0);
+    // lv_obj_add_style(cloud_file_btn_new_proj_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    // lv_obj_set_grid_cell(cloud_file_btn_new_proj_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 2, 1);
+    // lv_obj_add_event_cb(cloud_file_btn_new_proj_screen, cloud_file_explorer_cb, LV_EVENT_CLICKED, NULL);
+    // cloud_file_image_new_proj_screen = lv_image_create(cloud_file_btn_new_proj_screen);
+    // lv_image_set_src(cloud_file_image_new_proj_screen, &cloud_symbol);
+    // lv_obj_center(cloud_file_image_new_proj_screen);
+    // cloud_file_label_new_proj_screen = lv_label_create(cloud_file_btn_new_proj_screen);
+    // lv_obj_add_style(cloud_file_label_new_proj_screen, &style_file_label_new_proj_screen, 0);
+    // lv_obj_set_align(cloud_file_label_new_proj_screen, LV_ALIGN_BOTTOM_MID);
+    // lv_label_set_text(cloud_file_label_new_proj_screen, "Select from Cloud");
     /* Back Button */
     back_btn_new_proj_screen = lv_obj_create(new_proj_screen);
     lv_obj_add_style(back_btn_new_proj_screen, &style_btn_new_proj_screen, 0);
@@ -946,6 +946,59 @@ void config_usb_explorer()
 void config_cloud_explorer()
 {
     cloud_file_explorer = lv_file_explorer_create(NULL);
+    lv_file_explorer_set_sort(cloud_file_explorer, LV_EXPLORER_SORT_KIND);
+    lv_file_explorer_open_dir(cloud_file_explorer, "A:/media/PortaGuide/");
+
+    char * envvar = "HOME";
+    char home_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(home_dir, "A:");
+    /* get the user's home directory from the HOME environment variable*/
+    strcat(home_dir, getenv(envvar));
+    LV_LOG_USER("home_dir: %s\n", home_dir);
+    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_HOME_DIR, home_dir);
+    char video_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(video_dir, home_dir);
+    strcat(video_dir, "/Videos");
+    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_VIDEO_DIR, video_dir);
+    char picture_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(picture_dir, home_dir);
+    strcat(picture_dir, "/Pictures");
+    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_PICTURES_DIR, picture_dir);
+    char music_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(music_dir, home_dir);
+    strcat(music_dir, "/Music");
+    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_MUSIC_DIR, music_dir);
+    char document_dir[LV_FS_MAX_PATH_LENGTH];
+    strcpy(document_dir, home_dir);
+    strcat(document_dir, "/Documents");
+    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_DOCS_DIR, document_dir);
+
+    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_FS_DIR, "A:/");
+
+    /* Button for show/hide sidebar menu */
+    lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(cloud_file_explorer);
+    lv_obj_t *file_explorer_header = lv_file_explorer_get_header(cloud_file_explorer);
+    lv_obj_t *btn = lv_button_create(file_explorer_header);
+    lv_obj_set_size(btn, 30, 30);
+    lv_obj_set_style_radius(btn, 2, 0);
+    lv_obj_set_style_pad_all(btn, 4, 0);
+    lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
+    lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
+    lv_obj_add_event_cb(btn, sidebar_event_cb, LV_EVENT_VALUE_CHANGED, file_explorer_quick_access);
+    lv_obj_t *label = lv_label_create(btn);
+    lv_label_set_text(label, LV_SYMBOL_LIST);
+    lv_obj_center(label);
+
+    /* Button for backing out of file explorer */
+    lv_obj_t *close_btn = lv_button_create(file_explorer_header);
+    lv_obj_set_size(close_btn, 100, 50);
+    lv_obj_set_style_radius(close_btn, 2, 0);
+    lv_obj_set_style_pad_all(close_btn, 4, 0);
+    lv_obj_align(close_btn, LV_ALIGN_RIGHT_MID, 0, 0);
+    lv_obj_add_event_cb(close_btn, open_new_proj_screen, LV_EVENT_CLICKED, NULL);
+    lv_obj_t *close_label = lv_label_create(close_btn);
+    lv_label_set_text(close_label, "Close");
+    lv_obj_center(close_label);
 }
 
 /*************
