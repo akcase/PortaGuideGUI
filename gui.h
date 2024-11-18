@@ -1,5 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <pigpiod_if2.h>
+#include <pigpio.h>
 
 #include "lv_port_linux/lvgl/lvgl.h"
 #include "images/cloud_symbol.c"
@@ -12,6 +15,19 @@
 #define COLOR_PALETTE LV_PALETTE_LIGHT_BLUE
 #define BACK_BTN_HORZ 100
 #define BACK_BTN_VERT 75
+
+/********************************
+ * PIGPIO Defines and Variables *
+ ********************************/
+
+/* GPIO2 -> Pin 3 */
+#define GPIO_START_OUT 3
+/* GPIO3 -> Pin 5 */
+#define GPIO_RUN_IN 5
+/* GPIO4 -> Pin 7 */
+#define GPIO_E_STOP 7
+
+int pi_num = 0;
 
 LV_IMAGE_DECLARE(cloud_symbol);
 LV_IMAGE_DECLARE(usb_symbol);
@@ -95,6 +111,47 @@ static lv_style_t style_label_info_screen;
 /* Layout */
 static int32_t col_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 static int32_t row_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+
+/**
+ * Info Writeup
+ * 
+ * This will hold information about the project.
+ * 
+ * 1) The inspiration behind the project
+ * 2) What it is capable of
+ * 3) What we used to make the project
+ * 4) Who made the project
+ */
+
+/* Screen */
+static lv_obj_t *info_writeup;
+static lv_style_t *style_info_writeup;
+/* Headers */
+/* Main Text Blocks */
+/* Styles */
+
+/**
+ * Help Writeup
+ * 
+ * This will be a sort-of FAQ section, helping to navigate to 
+ * the correct parts of the program based on what the user is 
+ * hoping to do.
+ */
+
+/* Screen */
+static lv_obj_t *help_writeup;
+static lv_style_t *style_help_writeup;
+
+/**
+ * Tutorial
+ * 
+ * This will just display a QR code that can be used to watch
+ * a YouTube video showing how everything works.
+ */
+
+/* Screen */
+static lv_obj_t *tutorial_screen;
+static lv_style_t *style_tutorial_screen;
 
 /**
  * Demo Selection Screen
@@ -211,6 +268,34 @@ static lv_style_t style_label_new_proj_screen;
 static int32_t col_new_proj_screen[] = {LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(13), LV_GRID_FR(2), LV_GRID_FR(13), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 static int32_t row_new_proj_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(13), LV_GRID_FR(2), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 
+/**
+ * Program Running Screen
+ * 
+ * This screen will be displayed while the program is running. It will
+ * display this with text, and will also have a quit button that will
+ * stop the program by triggering the E-Stop GPIO configured in LinuxCNC.
+ */
+
+lv_obj_t *program_running_screen;
+lv_obj_t *program_running_label;
+lv_obj_t *style_program_running_label;
+lv_obj_t *program_running_quit_button;
+lv_obj_t *program_running_quit_label;
+
+/**
+ * Program Done Screen
+ * 
+ * This screen will be opened once the program stops running. It will
+ * have text saying that the program finished running and a button that,
+ * when pressed, will return the user back to the main screen
+ */
+
+lv_obj_t *program_done_screen;
+lv_obj_t *program_done_label;
+lv_obj_t *style_program_done_label;
+lv_obj_t *program_done_quit_button;
+lv_obj_t *program_done_quit_label;
+
 /******************
  * File Explorers *
  ******************/
@@ -231,9 +316,17 @@ static lv_style_t style_back_label;
 /* Pressed Button */
 static lv_style_t style_btn_pressed;
 
+lv_indev_t *gpio_run_in;
+
 /************************
  * Function Declaration *
  ************************/
+
+/***** GPIO Callback Functions *****/
+
+// void program_running_cb(int pi, unsigned int user_gpio, unsigned int level, uint32_t tick);
+
+// void program_stopped_cb(int pi, unsigned int user_gpio, unsigned int level, uint32_t tick);
 
 /***** Functions for all Screens *****/
 
@@ -247,11 +340,7 @@ void style_init();
  */
 static lv_color_t darken(const lv_color_filter_dsc_t *dsc, lv_color_t color, lv_opa_t opa);
 
-/***** Start Screen Functions *****/
-
-void open_start_screen();
-
-void config_start_screen();
+/***** Callbacks *****/
 
 static void info_pressed_cb(lv_event_t *e);
 
@@ -274,6 +363,14 @@ static void file_selected_cb(lv_event_t *e);
 static void quit_cb(lv_event_t *e);
 
 static void sidebar_event_cb(lv_event_t *e);
+
+static void quit_program_cb(lv_event_t *e);
+
+/***** Start Screen Functions *****/
+
+void open_start_screen();
+
+void config_start_screen();
 
 /***** Demo Screen Functions *****/
 
@@ -309,6 +406,18 @@ void config_usb_explorer();
 
 void config_cloud_explorer();
 
+/***** Program Running Screen *****/
+
+void config_program_running();
+
+void open_program_running();
+
+/***** Program Done Screen *****/
+
+void config_program_done();
+
+void open_program_done();
+
 /**************************
  * Touch Screen and Mouse *
  **************************/
@@ -318,9 +427,36 @@ void input_init()
     lv_sdl_mouse_create();
 }
 
+void program_running_cb(lv_indev_t *indev, lv_indev_data_t *data)
+{
+    if (gpio_read(pi_num, GPIO_RUN_IN) == PI_HIGH)
+    {
+        open_program_running();
+    }
+}
+
+
+void pin_cb_init()
+{
+    gpio_run_in = lv_indev_create();
+    lv_indev_set_type(gpio_run_in, LV_INDEV_TYPE_POINTER);
+    lv_indev_set_read_cb(gpio_run_in, program_running_cb);
+}
+
 /***********************
  * Function Definition *
  ***********************/
+
+// void program_running_cb(int pi, unsigned int user_gpio, unsigned int level, uint32_t tick)
+// {
+//     open_program_running();
+//     printf("In program_running_cb\n");
+// }
+
+// void program_stopped_cb(int pi, unsigned int user_gpio, unsigned int level, uint32_t tick)
+// {
+//     open_program_done();
+// }
 
 static lv_color_t darken(const lv_color_filter_dsc_t *dsc, lv_color_t color, lv_opa_t opa)
 {
@@ -565,6 +701,16 @@ void open_cloud_explorer()
     lv_screen_load(cloud_file_explorer);
 }
 
+void open_program_running()
+{
+    lv_screen_load(program_running_screen);
+}
+
+void open_program_done()
+{
+    lv_screen_load(program_done_screen);
+}
+
 /*********************
  * Configure Screens *
  *********************/
@@ -692,6 +838,21 @@ void config_info_screen()
     lv_obj_add_style(back_label_info_screen, &style_back_label, 0);
     lv_label_set_text(back_label_info_screen, "Back");
     lv_obj_center(back_label_info_screen);
+}
+
+void config_info_writeup()
+{
+
+}
+
+void config_help_writeup()
+{
+
+}
+
+void config_tutorial_writeup()
+{
+
 }
 
 void config_demo_screen()
@@ -1004,6 +1165,54 @@ void config_cloud_explorer()
     lv_obj_center(close_label);
 }
 
+void config_program_running()
+{
+    program_running_screen = lv_obj_create(NULL);
+    lv_obj_set_size(program_running_screen, 1024, 600);
+    lv_obj_center(program_running_screen);
+    lv_obj_add_style(program_running_screen, &style_start_screen, 0);
+
+    program_running_quit_button = lv_obj_create(program_running_screen);
+    lv_obj_set_size(program_running_quit_button, 100, 75);
+    lv_obj_add_style(program_running_quit_button, &style_back_btn_demo_popup, 0);
+    lv_obj_add_style(program_running_quit_button, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_align(program_running_quit_button, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
+    lv_obj_add_event_cb(program_running_quit_button, quit_program_cb, LV_EVENT_CLICKED, NULL);
+    program_running_quit_label = lv_label_create(program_running_quit_button);
+    lv_obj_center(program_running_quit_label);
+    lv_obj_add_style(program_running_quit_label, &style_back_label, 0);
+    lv_label_set_text(program_running_quit_label, "Quit");
+
+    program_running_label = lv_label_create(program_running_screen);
+    lv_obj_center(program_running_label);
+    lv_obj_add_style(program_running_label, &style_main_text_demo_popup, 0);
+    lv_label_set_text(program_running_label, "Program is Running...");
+}
+
+void config_program_done()
+{
+    program_done_screen = lv_obj_create(NULL);
+    lv_obj_set_size(program_done_screen, 1024, 600);
+    lv_obj_center(program_done_screen);
+    lv_obj_add_style(program_done_screen, &style_start_screen, 0);
+
+    program_done_quit_button = lv_obj_create(program_done_screen);
+    lv_obj_set_size(program_done_quit_button, 100, 75);
+    lv_obj_add_style(program_done_quit_button, &style_start_btn_demo_popup, 0);
+    lv_obj_add_style(program_done_quit_button, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_align(program_done_quit_button, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
+    lv_obj_add_event_cb(program_done_quit_button, back_pressed_cb, LV_EVENT_CLICKED, NULL);
+    program_done_quit_label = lv_label_create(program_done_quit_button);
+    lv_obj_center(program_done_quit_label);
+    lv_obj_add_style(program_done_quit_label, &style_back_label, 0);
+    lv_label_set_text(program_done_quit_label, "Finish");
+
+    program_done_label = lv_label_create(program_done_screen);
+    lv_obj_center(program_done_label);
+    lv_obj_add_style(program_done_label, &style_main_text_demo_popup, 0);
+    lv_label_set_text(program_done_label, "Program is Done Running");
+}
+
 /*************
  * Callbacks *
  *************/
@@ -1143,5 +1352,14 @@ static void sidebar_event_cb(lv_event_t *e)
         {
             lv_obj_remove_flag(file_explorer, LV_OBJ_FLAG_HIDDEN);
         }
+    }
+}
+
+static void quit_program_cb(lv_event_t *e)
+{
+    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
+    {
+        gpio_write(pi_num, GPIO_E_STOP, 1); // Activate E-Stop
+        open_start_screen();
     }
 }
