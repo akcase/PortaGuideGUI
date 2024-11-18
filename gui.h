@@ -4,6 +4,7 @@
 #include <pigpiod_if2.h>
 #include <pigpio.h>
 
+#include "writeup.h"
 #include "lv_port_linux/lvgl/lvgl.h"
 #include "images/cloud_symbol.c"
 #include "images/usb_symbol.c"
@@ -276,11 +277,11 @@ static int32_t row_new_proj_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR
  * stop the program by triggering the E-Stop GPIO configured in LinuxCNC.
  */
 
-lv_obj_t *program_running_screen;
-lv_obj_t *program_running_label;
-lv_obj_t *style_program_running_label;
-lv_obj_t *program_running_quit_button;
-lv_obj_t *program_running_quit_label;
+static lv_obj_t *program_running_screen;
+static lv_obj_t *program_running_label;
+static lv_obj_t *style_program_running_label;
+static lv_obj_t *program_running_quit_button;
+static lv_obj_t *program_running_quit_label;
 
 /**
  * Program Done Screen
@@ -290,11 +291,11 @@ lv_obj_t *program_running_quit_label;
  * when pressed, will return the user back to the main screen
  */
 
-lv_obj_t *program_done_screen;
-lv_obj_t *program_done_label;
-lv_obj_t *style_program_done_label;
-lv_obj_t *program_done_quit_button;
-lv_obj_t *program_done_quit_label;
+static lv_obj_t *program_done_screen;
+static lv_obj_t *program_done_label;
+static lv_obj_t *style_program_done_label;
+static lv_obj_t *program_done_quit_button;
+static lv_obj_t *program_done_quit_label;
 
 /******************
  * File Explorers *
@@ -479,18 +480,18 @@ void start_screen_style_init()
     /* Style for main text */
     lv_style_init(&style_main_label_start_screen);
     lv_style_set_text_font(&style_main_label_start_screen, &lv_font_montserrat_48);
-    lv_style_set_text_color(&style_main_label_start_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_main_label_start_screen, lv_color_white());
 
     /* Style for buttons */
     lv_style_init(&style_btn_start_screen);
-    lv_style_set_bg_color(&style_btn_start_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_bg_color(&style_btn_start_screen, lv_color_white());
     lv_style_set_border_width(&style_btn_start_screen, 0);
     lv_style_set_radius(&style_btn_start_screen, 4);
 
     /* Style for labels */
     lv_style_init(&style_label_start_screen);
     lv_style_set_text_font(&style_label_start_screen, &lv_font_montserrat_34);
-    lv_style_set_text_color(&style_label_start_screen, lv_palette_darken(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_label_start_screen, lv_color_black());
 }
 
 void info_screen_style_init()
@@ -508,23 +509,23 @@ void info_screen_style_init()
     /* Style for main text */
     lv_style_init(&style_main_label_info_screen);
     lv_style_set_text_font(&style_main_label_info_screen, &lv_font_montserrat_48);
-    lv_style_set_text_color(&style_main_label_info_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_main_label_info_screen, lv_color_white());
 
     /* Style for subtext */
     lv_style_init(&style_sub_label_info_screen);
     lv_style_set_text_font(&style_sub_label_info_screen, &lv_font_montserrat_20);
-    lv_style_set_text_color(&style_sub_label_info_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_sub_label_info_screen, lv_color_white());
 
     /* Style for buttons */
     lv_style_init(&style_btn_info_screen);
-    lv_style_set_bg_color(&style_btn_info_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_bg_color(&style_btn_info_screen, lv_color_white());
     lv_style_set_border_width(&style_btn_info_screen, 0);
     lv_style_set_radius(&style_btn_info_screen, 4);
 
     /* Style for labels */
     lv_style_init(&style_label_info_screen);
     lv_style_set_text_font(&style_label_info_screen, &lv_font_montserrat_34);
-    lv_style_set_text_color(&style_label_info_screen, lv_palette_darken(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_label_info_screen, lv_color_black());
 }
 
 void demo_screen_style_init()
@@ -542,18 +543,18 @@ void demo_screen_style_init()
     /* Style for main text */
     lv_style_init(&style_main_label_demo_screen);
     lv_style_set_text_font(&style_main_label_demo_screen, &lv_font_montserrat_48);
-    lv_style_set_text_color(&style_main_label_demo_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_main_label_demo_screen, lv_color_white());
 
     /* Style for buttons */
     lv_style_init(&style_btn_demo_screen);
-    lv_style_set_bg_color(&style_btn_demo_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_bg_color(&style_btn_demo_screen, lv_color_white());
     lv_style_set_border_width(&style_btn_demo_screen, 0);
     lv_style_set_radius(&style_btn_demo_screen, 4);
 
     /* Style for labels */
     lv_style_init(&style_label_demo_screen);
     lv_style_set_text_font(&style_label_demo_screen, &lv_font_montserrat_34);
-    lv_style_set_text_color(&style_label_demo_screen, lv_palette_darken(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_label_demo_screen, lv_color_black());
 
     
 }
@@ -573,12 +574,12 @@ void demo_popup_style_init()
     /* Style for main text */
     lv_style_init(&style_main_text_demo_popup);
     lv_style_set_text_font(&style_main_text_demo_popup, &lv_font_montserrat_48);
-    lv_style_set_text_color(&style_main_text_demo_popup, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_main_text_demo_popup, lv_color_white());
 
     /* Style for subtext */
     lv_style_init(&style_sub_text_demo_popup);
     lv_style_set_text_font(&style_sub_text_demo_popup, &lv_font_montserrat_20);
-    lv_style_set_text_color(&style_sub_text_demo_popup, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_sub_text_demo_popup, lv_color_white());
 
     /* Style for back button */
     lv_style_init(&style_back_btn_demo_popup);
@@ -608,7 +609,7 @@ void new_proj_screen_style_init()
     /* Style for main text */
     lv_style_init(&style_main_label_new_proj_screen);
     lv_style_set_text_font(&style_main_label_new_proj_screen, &lv_font_montserrat_48);
-    lv_style_set_text_color(&style_main_label_new_proj_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_main_label_new_proj_screen, lv_color_white());
 
     /* Style for file explorer button */
     lv_style_init(&style_file_btn_new_proj_screen);
@@ -619,18 +620,18 @@ void new_proj_screen_style_init()
     /* Style for file explorer label */
     lv_style_init(&style_file_label_new_proj_screen);
     lv_style_set_text_font(&style_file_label_new_proj_screen, &lv_font_montserrat_30);
-    lv_style_set_text_color(&style_file_label_new_proj_screen, lv_palette_darken(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_file_label_new_proj_screen, lv_color_black());
 
     /* Style for buttons */
     lv_style_init(&style_btn_new_proj_screen);
-    lv_style_set_bg_color(&style_btn_new_proj_screen, lv_palette_lighten(COLOR_PALETTE, 5));
+    lv_style_set_bg_color(&style_btn_new_proj_screen, lv_color_white());
     lv_style_set_border_width(&style_btn_new_proj_screen, 0);
     lv_style_set_radius(&style_btn_new_proj_screen, 4);
 
     /* Style for labels */
     lv_style_init(&style_label_new_proj_screen);
     lv_style_set_text_font(&style_label_new_proj_screen, &lv_font_montserrat_34);
-    lv_style_set_text_color(&style_label_new_proj_screen, lv_palette_darken(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_label_new_proj_screen, lv_color_black());
 }
 
 void style_init()
@@ -652,7 +653,7 @@ void style_init()
     /* Style for back button */
     lv_style_init(&style_back_label);
     lv_style_set_text_font(&style_back_label, &lv_font_montserrat_18);
-    lv_style_set_text_color(&style_back_label, lv_palette_darken(COLOR_PALETTE, 5));
+    lv_style_set_text_color(&style_back_label, lv_color_black());
 
     /* Darken button when pressed */
     static lv_color_filter_dsc_t color_filter_btn;
