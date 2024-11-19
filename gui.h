@@ -113,11 +113,21 @@ static lv_style_t style_label_info_screen;
 static int32_t col_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 static int32_t row_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 
+/*************************
+ * Writeup Screen Styles *
+ *************************/
+/* Screen */
+static lv_style_t style_writeup_screen;
+/* Headers */
+static lv_style_t style_header;
+/* Main Text Blocks */
+static lv_style_t style_text;
+
 /**
  * Info Writeup
- * 
+ *
  * This will hold information about the project.
- * 
+ *
  * 1) The inspiration behind the project
  * 2) What it is capable of
  * 3) What we used to make the project
@@ -128,31 +138,55 @@ static int32_t row_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6),
 static lv_obj_t *info_writeup;
 static lv_style_t *style_info_writeup;
 /* Headers */
+static lv_obj_t *inspiration_header;
+static lv_obj_t *capability_header;
+static lv_obj_t *materials_header;
+static lv_obj_t *people_header;
 /* Main Text Blocks */
-/* Styles */
+static lv_obj_t *inspiration_text;
+static lv_obj_t *capability_text;
+static lv_obj_t *materials_text;
+static lv_obj_t *people_text;
+/* Other */
+static lv_obj_t *info_back_btn;
+static lv_obj_t *info_back_label;
 
 /**
  * Help Writeup
- * 
- * This will be a sort-of FAQ section, helping to navigate to 
- * the correct parts of the program based on what the user is 
+ *
+ * This will be a sort-of FAQ section, helping to navigate to
+ * the correct parts of the program based on what the user is
  * hoping to do.
  */
 
 /* Screen */
 static lv_obj_t *help_writeup;
-static lv_style_t *style_help_writeup;
+/* FAQ Headers */
+static lv_obj_t *FAQ_Q1;
+static lv_obj_t *FAQ_Q2;
+/* FAQ Answers */
+static lv_obj_t *FAQ_A1;
+static lv_obj_t *FAQ_A2;
+/* Other */
+static lv_obj_t *help_back_btn;
+static lv_obj_t *help_back_label;
 
 /**
  * Tutorial
- * 
+ *
  * This will just display a QR code that can be used to watch
  * a YouTube video showing how everything works.
  */
 
 /* Screen */
 static lv_obj_t *tutorial_screen;
-static lv_style_t *style_tutorial_screen;
+/* Headers */
+static lv_obj_t *tutorial_header;
+/* QR Code */
+static lv_obj_t *qr_code;
+/* Other */
+static lv_obj_t *tutorial_back_btn;
+static lv_obj_t *tutorial_back_label;
 
 /**
  * Demo Selection Screen
@@ -271,7 +305,7 @@ static int32_t row_new_proj_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR
 
 /**
  * Program Running Screen
- * 
+ *
  * This screen will be displayed while the program is running. It will
  * display this with text, and will also have a quit button that will
  * stop the program by triggering the E-Stop GPIO configured in LinuxCNC.
@@ -285,7 +319,7 @@ static lv_obj_t *program_running_quit_label;
 
 /**
  * Program Done Screen
- * 
+ *
  * This screen will be opened once the program stops running. It will
  * have text saying that the program finished running and a button that,
  * when pressed, will return the user back to the main screen
@@ -345,6 +379,14 @@ static lv_color_t darken(const lv_color_filter_dsc_t *dsc, lv_color_t color, lv_
 
 static void info_pressed_cb(lv_event_t *e);
 
+static void info_writeup_cb(lv_event_t *e);
+
+static void help_writeup_cb(lv_event_t *e);
+
+static void tutorial_cb(lv_event_t *e);
+
+static void writeup_back_cb(lv_event_t *e);
+
 static void new_proj_pressed_cb(lv_event_t *e);
 
 static void demo_pressed_cb(lv_event_t *e);
@@ -391,6 +433,14 @@ void open_info_screen();
 
 void config_info_screen();
 
+/***** Info Writeup Screen Functions *****/
+
+void open_info_writeup();
+void open_help_writeup();
+void open_tutorial_writeup();
+
+void config_writeup_screens();
+
 /***** New Project Screen Functions *****/
 
 void open_new_proj_screen();
@@ -435,7 +485,6 @@ void program_running_cb(lv_indev_t *indev, lv_indev_data_t *data)
         open_program_running();
     }
 }
-
 
 void pin_cb_init()
 {
@@ -555,8 +604,6 @@ void demo_screen_style_init()
     lv_style_init(&style_label_demo_screen);
     lv_style_set_text_font(&style_label_demo_screen, &lv_font_montserrat_34);
     lv_style_set_text_color(&style_label_demo_screen, lv_color_black());
-
-    
 }
 
 void demo_popup_style_init()
@@ -634,6 +681,25 @@ void new_proj_screen_style_init()
     lv_style_set_text_color(&style_label_new_proj_screen, lv_color_black());
 }
 
+void writeup_screen_style_init()
+{
+    lv_style_init(&style_writeup_screen);
+    lv_style_set_bg_color(&style_writeup_screen, lv_palette_darken(COLOR_PALETTE, 4));
+    lv_style_set_border_width(&style_writeup_screen, 0);
+    lv_style_set_radius(&style_writeup_screen, 0);
+
+    lv_style_init(&style_header);
+    lv_style_set_text_font(&style_header, &lv_font_montserrat_48);
+    lv_style_set_text_color(&style_header, lv_color_white());
+    lv_style_set_pad_all(&style_header, 25);
+
+    lv_style_init(&style_text);
+    lv_style_set_text_font(&style_text, &lv_font_montserrat_20);
+    lv_style_set_text_color(&style_text, lv_color_white());
+    lv_style_set_pad_top(&style_text, 25);
+    lv_style_set_pad_bottom(&style_text, 50);
+}
+
 void style_init()
 {
     start_screen_style_init();
@@ -645,6 +711,8 @@ void style_init()
     demo_popup_style_init();
 
     new_proj_screen_style_init();
+
+    writeup_screen_style_init();
 
     /****************
      * Other Styles *
@@ -710,6 +778,21 @@ void open_program_running()
 void open_program_done()
 {
     lv_screen_load(program_done_screen);
+}
+
+void open_info_writeup()
+{
+    lv_screen_load(info_writeup);
+}
+
+void open_help_writeup()
+{
+    lv_screen_load(help_writeup);
+}
+
+void open_tutorial_writeup()
+{
+    lv_screen_load(tutorial_screen);
 }
 
 /*********************
@@ -806,6 +889,7 @@ void config_info_screen()
     lv_obj_add_style(info_btn_info_screen, &style_btn_info_screen, 0);
     lv_obj_add_style(info_btn_info_screen, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(info_btn_info_screen, LV_GRID_ALIGN_STRETCH, 1, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(info_btn_info_screen, info_writeup_cb, LV_EVENT_CLICKED, NULL);
     info_label_info_screen = lv_label_create(info_btn_info_screen);
     lv_obj_add_style(info_label_info_screen, &style_label_info_screen, 0);
     lv_label_set_text(info_label_info_screen, "Info");
@@ -815,6 +899,7 @@ void config_info_screen()
     lv_obj_add_style(help_btn_info_screen, &style_btn_info_screen, 0);
     lv_obj_add_style(help_btn_info_screen, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(help_btn_info_screen, LV_GRID_ALIGN_STRETCH, 3, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(help_btn_info_screen, help_writeup_cb, LV_EVENT_CLICKED, NULL);
     help_label_info_screen = lv_label_create(help_btn_info_screen);
     lv_obj_add_style(help_label_info_screen, &style_label_info_screen, 0);
     lv_label_set_text(help_label_info_screen, "Help");
@@ -824,6 +909,7 @@ void config_info_screen()
     lv_obj_add_style(tutorial_btn_info_screen, &style_btn_info_screen, 0);
     lv_obj_add_style(tutorial_btn_info_screen, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(tutorial_btn_info_screen, LV_GRID_ALIGN_STRETCH, 5, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(tutorial_btn_info_screen, tutorial_cb, LV_EVENT_CLICKED, NULL);
     tutorial_label_info_screen = lv_label_create(tutorial_btn_info_screen);
     lv_obj_add_style(tutorial_label_info_screen, &style_label_info_screen, 0);
     lv_label_set_text(tutorial_label_info_screen, "Tutorial");
@@ -841,19 +927,163 @@ void config_info_screen()
     lv_obj_center(back_label_info_screen);
 }
 
-void config_info_writeup()
+void config_writeup_screens()
 {
+    int16_t back_btn_offset_x = 33;
+    int16_t back_btn_offset_y = 30;
 
-}
+    /********
+     * Info *
+     ********/
+    /***** Configure Screen *****/
+    info_writeup = lv_obj_create(NULL);
+    lv_obj_set_size(info_writeup, 1024, 600);
+    lv_obj_center(info_writeup);
+    lv_obj_add_style(info_writeup, &style_writeup_screen, 0);
+    /* Remove padding from all objects */
+    lv_obj_set_style_pad_all(info_writeup, 0, 0);
+    /***** Inspiration Section *****/
+    /* Header */
+    inspiration_header = lv_label_create(info_writeup);
+    lv_obj_add_style(inspiration_header, &style_header, 0);
+    lv_label_set_text(inspiration_header, inspiration_header_text);
+    lv_obj_align_to(inspiration_header, info_writeup, LV_ALIGN_TOP_MID, 0, 25);
+    /* Text */
+    inspiration_text = lv_label_create(info_writeup);
+    lv_obj_add_style(inspiration_text, &style_text, 0);
+    lv_obj_set_size(inspiration_text, 950, LV_SIZE_CONTENT);
+    lv_label_set_long_mode(inspiration_text, LV_LABEL_LONG_WRAP);
+    lv_label_set_text(inspiration_text, inspiration_text_text);
+    lv_obj_align_to(inspiration_text, inspiration_header, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** Capability Section *****/
+    /* Header */
+    capability_header = lv_label_create(info_writeup);
+    lv_obj_add_style(capability_header, &style_header, 0);
+    lv_label_set_text(capability_header, capability_header_text);
+    lv_obj_align_to(capability_header, inspiration_text, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /* Text */
+    capability_text = lv_label_create(info_writeup);
+    lv_obj_add_style(capability_text, &style_text, 0);
+    lv_obj_set_size(capability_text, 950, LV_SIZE_CONTENT);
+    lv_label_set_text(capability_text, capability_text_text);
+    lv_label_set_long_mode(capability_text, LV_LABEL_LONG_WRAP);
+    lv_obj_align_to(capability_text, capability_header, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** Materials Section *****/
+    /* Header */
+    materials_header = lv_label_create(info_writeup);
+    lv_obj_add_style(materials_header, &style_header, 0);
+    lv_label_set_text(materials_header, materials_header_text);
+    lv_obj_align_to(materials_header, capability_text, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /* Text */
+    materials_text = lv_label_create(info_writeup);
+    lv_obj_add_style(materials_text, &style_text, 0);
+    lv_obj_set_size(materials_text, 950, LV_SIZE_CONTENT);
+    lv_label_set_text(materials_text, materials_text_text);
+    lv_label_set_long_mode(materials_text, LV_LABEL_LONG_WRAP);
+    lv_obj_align_to(materials_text, materials_header, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** People Section *****/
+    /* Header */
+    people_header = lv_label_create(info_writeup);
+    lv_obj_add_style(people_header, &style_header, 0);
+    lv_label_set_text(people_header, people_header_text);
+    lv_obj_align_to(people_header, materials_text, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /* Text */
+    people_text = lv_label_create(info_writeup);
+    lv_obj_add_style(people_text, &style_text, 0);
+    lv_obj_set_size(people_text, 950, LV_SIZE_CONTENT);
+    lv_label_set_text(people_text, people_text_text);
+    lv_label_set_long_mode(people_text, LV_LABEL_LONG_WRAP);
+    lv_obj_align_to(people_text, people_header, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** Back Button *****/
+    info_back_btn = lv_obj_create(info_writeup);
+    lv_obj_add_style(info_back_btn, &style_btn_demo_screen, 0);
+    lv_obj_add_style(info_back_btn, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_size(info_back_btn, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_align_to(info_back_btn, info_writeup, LV_ALIGN_TOP_LEFT, back_btn_offset_x, back_btn_offset_y);
+    lv_obj_add_event_cb(info_back_btn, writeup_back_cb, LV_EVENT_CLICKED, NULL);
+    info_back_label = lv_label_create(info_back_btn);
+    lv_obj_add_style(info_back_label, &style_back_label, 0);
+    lv_label_set_text(info_back_label, "Back");
+    lv_obj_center(info_back_label);
 
-void config_help_writeup()
-{
+    /********
+     * Help *
+     ********/
+    /***** Configure Screen *****/
+    help_writeup = lv_obj_create(NULL);
+    lv_obj_set_size(help_writeup, 1024, 600);
+    lv_obj_center(help_writeup);
+    lv_obj_add_style(help_writeup, &style_writeup_screen, 0);
+    /* Remove padding from all objects */
+    lv_obj_set_style_pad_all(help_writeup, 0, 0);
+    /***** FAQ 1 *****/
+    /* Question */
+    FAQ_Q1 = lv_label_create(help_writeup);
+    lv_obj_add_style(FAQ_Q1, &style_header, 0);
+    lv_label_set_text(FAQ_Q1, FAQ_Q1_text);
+    lv_obj_align_to(FAQ_Q1, help_writeup, LV_ALIGN_TOP_MID, 0, 25);
+    /* Answer */
+    FAQ_A1 = lv_label_create(help_writeup);
+    lv_obj_add_style(FAQ_A1, &style_text, 0);
+    lv_obj_set_size(FAQ_A1, 950, LV_SIZE_CONTENT);
+    lv_label_set_text(FAQ_A1, FAQ_A1_text);
+    lv_label_set_long_mode(FAQ_A1, LV_LABEL_LONG_WRAP);
+    lv_obj_align_to(FAQ_A1, FAQ_Q1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** FAQ 2 *****/
+    /* Question */
+    FAQ_Q2 = lv_label_create(help_writeup);
+    lv_obj_add_style(FAQ_Q2, &style_header, 0);
+    lv_label_set_text(FAQ_Q2, FAQ_Q2_text);
+    lv_obj_align_to(FAQ_Q2, FAQ_A1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /* Answer */
+    FAQ_A2 = lv_label_create(help_writeup);
+    lv_obj_add_style(FAQ_A2, &style_text, 0);
+    lv_obj_set_size(FAQ_A2, 950, LV_SIZE_CONTENT);
+    lv_label_set_text(FAQ_A2, FAQ_A2_text);
+    lv_label_set_long_mode(FAQ_A2, LV_LABEL_LONG_WRAP);
+    lv_obj_align_to(FAQ_A2, FAQ_Q2, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** Back Button *****/
+    help_back_btn = lv_obj_create(help_writeup);
+    lv_obj_add_style(help_back_btn, &style_btn_demo_screen, 0);
+    lv_obj_add_style(help_back_btn, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_size(help_back_btn, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_align_to(help_back_btn, help_writeup, LV_ALIGN_TOP_LEFT, back_btn_offset_x, back_btn_offset_y);
+    lv_obj_add_event_cb(help_back_btn, writeup_back_cb, LV_EVENT_CLICKED, NULL);
+    help_back_label = lv_label_create(help_back_btn);
+    lv_obj_add_style(help_back_label, &style_back_label, 0);
+    lv_label_set_text(help_back_label, "Back");
+    lv_obj_center(help_back_label);
 
-}
-
-void config_tutorial_writeup()
-{
-
+    /************
+     * Tutorial *
+     ************/
+    /***** Configure Screen *****/
+    tutorial_screen = lv_obj_create(NULL);
+    lv_obj_set_size(tutorial_screen, 1024, 600);
+    lv_obj_center(tutorial_screen);
+    lv_obj_add_style(tutorial_screen, &style_writeup_screen, 0);
+    /* Remove padding from all objects */
+    lv_obj_set_style_pad_all(tutorial_screen, 0, 0);
+    /***** Header *****/
+    tutorial_header = lv_label_create(tutorial_screen);
+    lv_obj_add_style(tutorial_header, &style_header, 0);
+    lv_label_set_text(tutorial_header, tutorial_text);
+    lv_obj_align_to(tutorial_header, tutorial_screen, LV_ALIGN_TOP_MID, 0, 25);
+    /***** QR Code *****/
+    qr_code = lv_image_create(tutorial_screen);
+    lv_obj_set_style_pad_top(qr_code, 50, 0);
+    lv_obj_align_to(qr_code, tutorial_screen, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** Back Button *****/
+    tutorial_back_btn = lv_obj_create(tutorial_screen);
+    lv_obj_add_style(tutorial_back_btn, &style_btn_demo_screen, 0);
+    lv_obj_add_style(tutorial_back_btn, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_size(tutorial_back_btn, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_align_to(tutorial_back_btn, tutorial_screen, LV_ALIGN_TOP_LEFT, back_btn_offset_x, back_btn_offset_y);
+    lv_obj_add_event_cb(tutorial_back_btn, writeup_back_cb, LV_EVENT_CLICKED, NULL);
+    tutorial_back_label = lv_label_create(tutorial_back_btn);
+    lv_obj_add_style(tutorial_back_label, &style_back_label, 0);
+    lv_label_set_text(tutorial_back_label, "Back");
+    lv_obj_center(tutorial_back_label);
 }
 
 void config_demo_screen()
@@ -1053,7 +1283,7 @@ void config_usb_explorer()
     lv_file_explorer_set_sort(usb_file_explorer, LV_EXPLORER_SORT_KIND);
     lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide/");
 
-    char * envvar = "HOME";
+    char *envvar = "HOME";
     char home_dir[LV_FS_MAX_PATH_LENGTH];
     strcpy(home_dir, "A:");
     /* get the user's home directory from the HOME environment variable*/
@@ -1114,7 +1344,7 @@ void config_cloud_explorer()
     lv_file_explorer_set_sort(cloud_file_explorer, LV_EXPLORER_SORT_KIND);
     lv_file_explorer_open_dir(cloud_file_explorer, "A:/media/PortaGuide/");
 
-    char * envvar = "HOME";
+    char *envvar = "HOME";
     char home_dir[LV_FS_MAX_PATH_LENGTH];
     strcpy(home_dir, "A:");
     /* get the user's home directory from the HOME environment variable*/
@@ -1226,6 +1456,26 @@ static void info_pressed_cb(lv_event_t *e)
     }
 }
 
+static void info_writeup_cb(lv_event_t *e)
+{
+    open_info_writeup();
+}
+
+static void help_writeup_cb(lv_event_t *e)
+{
+    open_help_writeup();
+}
+
+static void tutorial_cb(lv_event_t *e)
+{
+    open_tutorial_writeup();
+}
+
+static void writeup_back_cb(lv_event_t *e)
+{
+    open_info_screen();
+}
+
 static void new_proj_pressed_cb(lv_event_t *e)
 {
     if (lv_event_get_code(e) == LV_EVENT_CLICKED)
@@ -1331,10 +1581,10 @@ static void file_selected_cb(lv_event_t *e)
 
 static void quit_cb(lv_event_t *e)
 {
-  if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-  {
-    lv_sdl_quit();
-  }
+    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
+    {
+        lv_sdl_quit();
+    }
 }
 
 static void sidebar_event_cb(lv_event_t *e)

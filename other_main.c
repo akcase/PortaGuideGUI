@@ -57,6 +57,7 @@ void config_screens()
     config_cloud_explorer();
     config_program_running();
     config_program_done();
+    config_writeup_screens();
 }
 
 void setup()
