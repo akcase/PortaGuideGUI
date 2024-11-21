@@ -1690,7 +1690,8 @@ static void file_selected_cb(lv_event_t *e)
     {
         char *file_path = lv_file_explorer_get_current_path(obj);
         char *file_name = lv_file_explorer_get_selected_file_name(obj);
-        LV_LOG_USER("%s%s", file_path, file_name);
+        open_file_confirm_screen();
+        lv_label_set_text(filepath_file_confirm, file_path);
     }
 }
 
