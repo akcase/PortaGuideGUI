@@ -1362,19 +1362,33 @@ void config_file_confirm_screen()
     /***** Main Text *****/
     main_label_file_confirm = lv_label_create(file_confirm_screen);
     lv_obj_add_style(main_label_file_confirm, &style_main_label_file_confirm, 0);
+    lv_obj_align(main_label_file_confirm, LV_ALIGN_TOP_MID, 0, 25);
+    lv_label_set_text(main_label_file_confirm, "Is the file below correct?\nPress start to start the program using the selected file");
     /***** File Path *****/
     filepath_file_confirm = lv_label_create(file_confirm_screen);
     lv_obj_add_style(filepath_file_confirm, &style_filepath_file_confirm, 0);
+    lv_obj_align_to(filepath_file_confirm, main_label_file_confirm, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+    lv_label_set_text(filepath_file_confirm, "empty filepath"); // Empty filepath, will set once a file is selected
     /***** Back Button *****/
     back_btn_file_confirm = lv_obj_create(file_confirm_screen);
     lv_obj_add_style(back_btn_file_confirm, &style_back_btn_file_confirm, 0);
+    lv_obj_set_size(back_btn_file_confirm, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_set_pos(back_btn_file_confirm, 33, 30);
+    lv_obj_add_event_cb(back_btn_file_confirm, usb_file_explorer_cb, LV_EVENT_CLICKED, NULL);
     back_label_file_confirm = lv_label_create(back_btn_file_confirm);
     lv_obj_add_style(back_label_file_confirm, &style_btn_label_file_confirm, 0);
+    lv_label_set_text(back_label_file_confirm, "Back");
+    lv_obj_center(back_label_file_confirm);
     /***** Start Button *****/
     start_btn_file_confirm = lv_obj_create(file_confirm_screen);
     lv_obj_add_style(start_btn_file_confirm, &style_start_btn_file_confirm, 0);
+    lv_obj_set_size(start_btn_file_confirm, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_set_pos(start_btn_file_confirm, 1024 - 33, 600 - 30);
+    lv_obj_add_event(start_btn_file_confirm, back_pressed_cb, LV_EVENT_CLICKED, NULL);
     start_label_file_confirm = lv_label_create(start_btn_file_confirm);
     lv_obj_add_style(start_label_file_confirm, &style_btn_label_file_confirm, 0);
+    lv_label_set_text(start_label_file_confirm, "Start");
+    lv_obj_center(start_label_file_confirm);
 }
 
 void config_usb_explorer()
