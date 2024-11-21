@@ -53,6 +53,7 @@ void config_screens()
     config_demo_screen();
     config_demo_popup();
     config_new_proj_screen();
+    config_file_confirm_screen();
     config_usb_explorer();
     config_cloud_explorer();
     config_program_running();

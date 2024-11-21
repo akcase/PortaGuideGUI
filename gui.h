@@ -304,6 +304,36 @@ static int32_t col_new_proj_screen[] = {LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR
 static int32_t row_new_proj_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(13), LV_GRID_FR(2), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 
 /**
+ * Select File Screen
+ *
+ * This will open once a file has been selected in the file explorer.
+ * Once it opens, there will be a button to go back, which will re-open
+ * the file explorer, a text prompt asking whether the selected file
+ * is the correct one, the file selected, and a start button to confirm
+ * the file choice and start the program.
+ */
+
+/* Screen */
+static lv_obj_t *file_confirm_screen;
+static lv_style_t style_file_confirm_screen;
+/* Main Text */
+static lv_obj_t *main_label_file_confirm;
+static lv_style_t style_main_label_file_confirm;
+/* File Path */
+static lv_obj_t *filepath_file_confirm;
+static lv_style_t style_filepath_file_confirm;
+/* Back Button */
+static lv_obj_t *back_btn_file_confirm;
+static lv_obj_t *back_label_file_confirm;
+static lv_style_t style_back_btn_file_confirm;
+/* Start Button */
+static lv_obj_t *start_btn_file_confirm;
+static lv_obj_t *start_label_file_confirm;
+static lv_style_t style_start_btn_file_confirm;
+/* Button Labels */
+static lv_style_t style_btn_label_file_confirm;
+
+/**
  * Program Running Screen
  *
  * This screen will be displayed while the program is running. It will
@@ -446,6 +476,12 @@ void config_writeup_screens();
 void open_new_proj_screen();
 
 void config_new_proj_screen();
+
+/***** File Confirm Screen Functions *****/
+
+void open_file_confirm_screen();
+
+void config_file_confirm_screen();
 
 /***** File Explorers *****/
 
@@ -681,6 +717,37 @@ void new_proj_screen_style_init()
     lv_style_set_text_color(&style_label_new_proj_screen, lv_color_black());
 }
 
+void file_confirm_screen_style_init()
+{
+    /* Screen */
+    lv_style_init(&style_file_confirm_screen);
+    lv_style_set_bg_color(&style_file_confirm_screen, lv_palette_darken(COLOR_PALETTE, 4));
+    lv_style_set_border_width(&style_file_confirm_screen, 0);
+    lv_style_set_radius(&style_file_confirm_screen, 0);
+    /* Main Text */
+    lv_style_init(&style_main_label_file_confirm);
+    lv_style_set_text_font(&style_main_label_file_confirm, &lv_font_montserrat_48);
+    lv_style_set_text_color(&style_main_label_file_confirm, lv_color_white());
+    /* File Path */
+    lv_style_init(&style_filepath_file_confirm);
+    lv_style_set_text_font(&style_filepath_file_confirm, &lv_font_montserrat_30);
+    lv_style_set_text_color(&style_filepath_file_confirm, lv_color_white());
+    /* Back Button */
+    lv_style_init(&style_back_btn_file_confirm);
+    lv_style_set_bg_color(&style_back_btn_file_confirm, lv_palette_main(LV_PALETTE_RED));
+    lv_style_set_border_width(&style_back_btn_file_confirm, 0);
+    lv_style_set_radius(&style_back_btn_file_confirm, 4);
+    /* Start Button */
+    lv_style_init(&style_start_btn_file_confirm);
+    lv_style_set_bg_color(&style_start_btn_file_confirm, lv_palette_main(LV_PALETTE_GREEN));
+    lv_style_set_border_width(&style_start_btn_file_confirm, 0);
+    lv_style_set_radius(&style_start_btn_file_confirm, 4);
+    /* Button Labels */
+    lv_style_init(&style_btn_label_file_confirm);
+    lv_style_set_text_font(&style_btn_label_file_confirm, &lv_font_montserrat_18);
+    lv_style_set_text_color(&style_btn_label_file_confirm, lv_color_black());
+}
+
 void writeup_screen_style_init()
 {
     lv_style_init(&style_writeup_screen);
@@ -711,6 +778,8 @@ void style_init()
     demo_popup_style_init();
 
     new_proj_screen_style_init();
+
+    file_confirm_screen_style_init();
 
     writeup_screen_style_init();
 
@@ -758,6 +827,11 @@ void open_demo_popup()
 void open_new_proj_screen()
 {
     lv_screen_load(new_proj_screen);
+}
+
+void open_file_confirm_screen()
+{
+    lv_screen_load(file_confirm_screen);
 }
 
 void open_usb_explorer()
@@ -1274,6 +1348,33 @@ void config_new_proj_screen()
     lv_obj_add_style(back_label_new_proj_screen, &style_back_label, 0);
     lv_label_set_text(back_label_new_proj_screen, "Back");
     lv_obj_center(back_label_new_proj_screen);
+}
+
+void config_file_confirm_screen()
+{
+    /***** Configure Screen *****/
+    file_confirm_screen = lv_obj_create(NULL);
+    lv_obj_set_size(file_confirm_screen, 1024, 600);
+    lv_obj_center(file_confirm_screen);
+    lv_obj_add_style(file_confirm_screen, &style_file_confirm_screen, 0);
+    /* Remove padding from all objects */
+    lv_obj_set_style_pad_all(file_confirm_screen, 0, 0);
+    /***** Main Text *****/
+    main_label_file_confirm = lv_label_create(file_confirm_screen);
+    lv_obj_add_style(main_label_file_confirm, &style_main_label_file_confirm, 0);
+    /***** File Path *****/
+    filepath_file_confirm = lv_label_create(file_confirm_screen);
+    lv_obj_add_style(filepath_file_confirm, &style_filepath_file_confirm, 0);
+    /***** Back Button *****/
+    back_btn_file_confirm = lv_obj_create(file_confirm_screen);
+    lv_obj_add_style(back_btn_file_confirm, &style_back_btn_file_confirm, 0);
+    back_label_file_confirm = lv_label_create(back_btn_file_confirm);
+    lv_obj_add_style(back_label_file_confirm, &style_btn_label_file_confirm, 0);
+    /***** Start Button *****/
+    start_btn_file_confirm = lv_obj_create(file_confirm_screen);
+    lv_obj_add_style(start_btn_file_confirm, &style_start_btn_file_confirm, 0);
+    start_label_file_confirm = lv_label_create(start_btn_file_confirm);
+    lv_obj_add_style(start_label_file_confirm, &style_btn_label_file_confirm, 0);
 }
 
 void config_usb_explorer()
