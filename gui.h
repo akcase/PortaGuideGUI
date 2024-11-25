@@ -33,6 +33,8 @@ int pi_num = 0;
 LV_IMAGE_DECLARE(cloud_symbol);
 LV_IMAGE_DECLARE(usb_symbol);
 
+char *file_path_and_name = "";
+
 lv_display_t *display;
 
 /**
@@ -726,11 +728,11 @@ void file_confirm_screen_style_init()
     lv_style_set_radius(&style_file_confirm_screen, 0);
     /* Main Text */
     lv_style_init(&style_main_label_file_confirm);
-    lv_style_set_text_font(&style_main_label_file_confirm, &lv_font_montserrat_48);
+    lv_style_set_text_font(&style_main_label_file_confirm, &lv_font_montserrat_40);
     lv_style_set_text_color(&style_main_label_file_confirm, lv_color_white());
     /* File Path */
     lv_style_init(&style_filepath_file_confirm);
-    lv_style_set_text_font(&style_filepath_file_confirm, &lv_font_montserrat_30);
+    lv_style_set_text_font(&style_filepath_file_confirm, &lv_font_montserrat_24);
     lv_style_set_text_color(&style_filepath_file_confirm, lv_color_white());
     /* Back Button */
     lv_style_init(&style_back_btn_file_confirm);
@@ -1362,12 +1364,12 @@ void config_file_confirm_screen()
     /***** Main Text *****/
     main_label_file_confirm = lv_label_create(file_confirm_screen);
     lv_obj_add_style(main_label_file_confirm, &style_main_label_file_confirm, 0);
-    lv_obj_align(main_label_file_confirm, LV_ALIGN_TOP_MID, 0, 25);
-    lv_label_set_text(main_label_file_confirm, "Is the file below correct?\nPress start to start the program using the selected file");
+    lv_obj_align(main_label_file_confirm, LV_ALIGN_TOP_MID, 0, 50);
+    lv_label_set_text(main_label_file_confirm, "Is the file below correct?");
     /***** File Path *****/
     filepath_file_confirm = lv_label_create(file_confirm_screen);
     lv_obj_add_style(filepath_file_confirm, &style_filepath_file_confirm, 0);
-    lv_obj_align_to(filepath_file_confirm, main_label_file_confirm, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+    lv_obj_align_to(filepath_file_confirm, main_label_file_confirm, LV_ALIGN_OUT_BOTTOM_MID, 0, 100);
     lv_label_set_text(filepath_file_confirm, "empty filepath"); // Empty filepath, will set once a file is selected
     /***** Back Button *****/
     back_btn_file_confirm = lv_obj_create(file_confirm_screen);
@@ -1383,7 +1385,7 @@ void config_file_confirm_screen()
     start_btn_file_confirm = lv_obj_create(file_confirm_screen);
     lv_obj_add_style(start_btn_file_confirm, &style_start_btn_file_confirm, 0);
     lv_obj_set_size(start_btn_file_confirm, BACK_BTN_HORZ, BACK_BTN_VERT);
-    lv_obj_set_pos(start_btn_file_confirm, 1024 - 33, 600 - 30);
+    lv_obj_set_pos(start_btn_file_confirm, 1024 - BACK_BTN_HORZ - 33, 600 - BACK_BTN_VERT - 30);
     lv_obj_add_event(start_btn_file_confirm, back_pressed_cb, LV_EVENT_CLICKED, NULL);
     start_label_file_confirm = lv_label_create(start_btn_file_confirm);
     lv_obj_add_style(start_label_file_confirm, &style_btn_label_file_confirm, 0);
@@ -1690,8 +1692,11 @@ static void file_selected_cb(lv_event_t *e)
     {
         char *file_path = lv_file_explorer_get_current_path(obj);
         char *file_name = lv_file_explorer_get_selected_file_name(obj);
+        // strcat(file_path_and_name, file_path);
+        strcat(file_path, file_name);
         open_file_confirm_screen();
         lv_label_set_text(filepath_file_confirm, file_path);
+        lv_obj_align_to(filepath_file_confirm, main_label_file_confirm, LV_ALIGN_OUT_BOTTOM_MID, 0, 100);
     }
 }
 
