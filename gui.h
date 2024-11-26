@@ -35,7 +35,9 @@ int pi_num = 0;
 LV_IMAGE_DECLARE(cloud_symbol);
 LV_IMAGE_DECLARE(usb_symbol);
 
-char *file_path_and_name = "";
+char *file_path;
+char *file_name;
+char *file_path_and_name[255];
 
 lv_display_t *display;
 
@@ -842,6 +844,24 @@ void open_file_confirm_screen()
 
 void open_usb_explorer()
 {
+    usb_file_explorer = lv_file_explorer_create(NULL);
+    lv_file_explorer_set_sort(usb_file_explorer, LV_EXPLORER_SORT_KIND);
+    lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide");
+    lv_obj_add_event_cb(usb_file_explorer, file_selected_cb, LV_EVENT_ALL, NULL);
+    lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(usb_file_explorer);
+    lv_obj_t *file_explorer_header = lv_file_explorer_get_header(usb_file_explorer);
+    lv_obj_t *file_explorer_main = lv_file_explorer_get_file_table(usb_file_explorer);
+    lv_obj_add_flag(file_explorer_quick_access, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_t *close_btn = lv_button_create(file_explorer_header);
+    lv_obj_set_size(close_btn, 100, 50);
+    lv_obj_set_style_radius(close_btn, 2, 0);
+    lv_obj_set_style_pad_all(close_btn, 4, 0);
+    lv_obj_align(close_btn, LV_ALIGN_LEFT_MID, 0, 0);
+    lv_obj_add_event_cb(close_btn, open_new_proj_screen, LV_EVENT_CLICKED, NULL);
+    lv_obj_t *close_label = lv_label_create(close_btn);
+    lv_label_set_text(close_label, "Close");
+    lv_obj_center(close_label);
+    
     lv_screen_load(usb_file_explorer);
 }
 
@@ -1403,33 +1423,32 @@ void config_usb_explorer()
     /* Set up file explorer */
     usb_file_explorer = lv_file_explorer_create(NULL);
     lv_file_explorer_set_sort(usb_file_explorer, LV_EXPLORER_SORT_KIND);
-    lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide/");
+    lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide");
 
-    char *envvar = "HOME";
-    char home_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(home_dir, "A:");
-    /* get the user's home directory from the HOME environment variable*/
-    strcat(home_dir, getenv(envvar));
-    LV_LOG_USER("home_dir: %s\n", home_dir);
-    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_HOME_DIR, home_dir);
-    char video_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(video_dir, home_dir);
-    strcat(video_dir, "/Videos");
-    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_VIDEO_DIR, video_dir);
-    char picture_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(picture_dir, home_dir);
-    strcat(picture_dir, "/Pictures");
-    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_PICTURES_DIR, picture_dir);
-    char music_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(music_dir, home_dir);
-    strcat(music_dir, "/Music");
-    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_MUSIC_DIR, music_dir);
-    char document_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(document_dir, home_dir);
-    strcat(document_dir, "/Documents");
-    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_DOCS_DIR, document_dir);
+    // char *envvar = "HOME";
+    // char home_dir[LV_FS_MAX_PATH_LENGTH];
+    // strcpy(home_dir, "A:");
+    // /* get the user's home directory from the HOME environment variable*/
+    // strcat(home_dir, getenv(envvar));
+    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_HOME_DIR, home_dir);
+    // char video_dir[LV_FS_MAX_PATH_LENGTH];
+    // strcpy(video_dir, home_dir);
+    // strcat(video_dir, "/Videos");
+    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_VIDEO_DIR, video_dir);
+    // char picture_dir[LV_FS_MAX_PATH_LENGTH];
+    // strcpy(picture_dir, home_dir);
+    // strcat(picture_dir, "/Pictures");
+    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_PICTURES_DIR, picture_dir);
+    // char music_dir[LV_FS_MAX_PATH_LENGTH];
+    // strcpy(music_dir, home_dir);
+    // strcat(music_dir, "/Music");
+    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_MUSIC_DIR, music_dir);
+    // char document_dir[LV_FS_MAX_PATH_LENGTH];
+    // strcpy(document_dir, home_dir);
+    // strcat(document_dir, "/Documents");
+    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_DOCS_DIR, document_dir);
 
-    lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_FS_DIR, "A:/");
+    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_FS_DIR, "A:/");
 
     lv_obj_add_event_cb(usb_file_explorer, file_selected_cb, LV_EVENT_ALL, NULL);
 
@@ -1437,23 +1456,26 @@ void config_usb_explorer()
     lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(usb_file_explorer);
     lv_obj_t *file_explorer_header = lv_file_explorer_get_header(usb_file_explorer);
     lv_obj_t *file_explorer_main = lv_file_explorer_get_file_table(usb_file_explorer);
-    lv_obj_t *btn = lv_button_create(file_explorer_header);
-    lv_obj_set_size(btn, 30, 30);
-    lv_obj_set_style_radius(btn, 2, 0);
-    lv_obj_set_style_pad_all(btn, 4, 0);
-    lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
-    lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
-    lv_obj_add_event_cb(btn, sidebar_event_cb, LV_EVENT_VALUE_CHANGED, file_explorer_quick_access);
-    lv_obj_t *label = lv_label_create(btn);
-    lv_label_set_text(label, LV_SYMBOL_LIST);
-    lv_obj_center(label);
+
+    lv_obj_add_flag(file_explorer_quick_access, LV_OBJ_FLAG_HIDDEN);
+
+    // lv_obj_t *btn = lv_button_create(file_explorer_header);
+    // lv_obj_set_size(btn, 30, 30);
+    // lv_obj_set_style_radius(btn, 2, 0);
+    // lv_obj_set_style_pad_all(btn, 4, 0);
+    // lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
+    // lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
+    // lv_obj_add_event_cb(btn, sidebar_event_cb, LV_EVENT_VALUE_CHANGED, file_explorer_quick_access);
+    // lv_obj_t *label = lv_label_create(btn);
+    // lv_label_set_text(label, LV_SYMBOL_LIST);
+    // lv_obj_center(label);
 
     /* Button for backing out of file explorer */
     lv_obj_t *close_btn = lv_button_create(file_explorer_header);
     lv_obj_set_size(close_btn, 100, 50);
     lv_obj_set_style_radius(close_btn, 2, 0);
     lv_obj_set_style_pad_all(close_btn, 4, 0);
-    lv_obj_align(close_btn, LV_ALIGN_RIGHT_MID, 0, 0);
+    lv_obj_align(close_btn, LV_ALIGN_LEFT_MID, 0, 0);
     lv_obj_add_event_cb(close_btn, open_new_proj_screen, LV_EVENT_CLICKED, NULL);
     lv_obj_t *close_label = lv_label_create(close_btn);
     lv_label_set_text(close_label, "Close");
@@ -1669,14 +1691,17 @@ static void file_selected_cb(lv_event_t *e)
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *obj = lv_event_get_target(e);
 
-    if (lv_event_get_code(e) == LV_EVENT_VALUE_CHANGED)
+    if ((lv_event_get_code(e) == LV_EVENT_VALUE_CHANGED) && (lv_event_get_code(e) != LV_EVENT_READY))
     {
-        char *file_path = lv_file_explorer_get_current_path(obj);
-        char *file_name = lv_file_explorer_get_selected_file_name(obj);
-        // strcat(file_path_and_name, file_path);
-        strcat(file_path, file_name);
+        file_path = lv_file_explorer_get_current_path(obj);
+        printf("File Path: %s\n", file_path);
+        file_name = lv_file_explorer_get_selected_file_name(obj);
+        printf("File Name: %s\n", file_name);
+        memset(&file_path_and_name[0], 0, sizeof(file_path_and_name));
+        strcat(file_path_and_name, file_path);
+        strcat(file_path_and_name, file_name);
         open_file_confirm_screen();
-        lv_label_set_text(filepath_file_confirm, file_path);
+        lv_label_set_text(filepath_file_confirm, file_path_and_name);
         lv_obj_align_to(filepath_file_confirm, main_label_file_confirm, LV_ALIGN_OUT_BOTTOM_MID, 0, 100);
     }
 }
