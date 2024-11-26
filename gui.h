@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 #include <pigpiod_if2.h>
@@ -1296,6 +1298,7 @@ void config_demo_popup()
     lv_obj_add_style(start_btn_demo_popup, &style_start_btn_demo_popup, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(start_btn_demo_popup, LV_GRID_ALIGN_END, 5, 1, LV_GRID_ALIGN_END, 3, 1);
     lv_obj_set_size(start_btn_demo_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_add_event_cb(start_btn_demo_popup, start_program_cb, LV_EVENT_CLICKED, NULL);
     start_label_demo_popup = lv_label_create(start_btn_demo_popup);
     lv_obj_add_style(start_label_demo_popup, &style_back_label, 0);
     lv_label_set_text(start_label_demo_popup, "Start");
@@ -1681,6 +1684,8 @@ static void file_selected_cb(lv_event_t *e)
 static void quit_cb(lv_event_t *e)
 {
     lv_sdl_quit();
+    pid_t pid = getpid();
+    kill(pid, SIGINT);
 }
 
 static void sidebar_event_cb(lv_event_t *e)
