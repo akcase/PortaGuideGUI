@@ -439,6 +439,8 @@ static void quit_cb(lv_event_t *e);
 
 static void sidebar_event_cb(lv_event_t *e);
 
+static void start_program_cb(lv_event_t *e);
+
 static void quit_program_cb(lv_event_t *e);
 
 /***** Start Screen Functions *****/
@@ -1386,7 +1388,7 @@ void config_file_confirm_screen()
     lv_obj_add_style(start_btn_file_confirm, &style_start_btn_file_confirm, 0);
     lv_obj_set_size(start_btn_file_confirm, BACK_BTN_HORZ, BACK_BTN_VERT);
     lv_obj_set_pos(start_btn_file_confirm, 1024 - BACK_BTN_HORZ - 33, 600 - BACK_BTN_VERT - 30);
-    lv_obj_add_event(start_btn_file_confirm, back_pressed_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event(start_btn_file_confirm, start_program_cb, LV_EVENT_CLICKED, NULL);
     start_label_file_confirm = lv_label_create(start_btn_file_confirm);
     lv_obj_add_style(start_label_file_confirm, &style_btn_label_file_confirm, 0);
     lv_label_set_text(start_label_file_confirm, "Start");
@@ -1567,10 +1569,7 @@ void config_program_done()
 
 static void info_pressed_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        open_info_screen();
-    }
+    open_info_screen();
 }
 
 static void info_writeup_cb(lv_event_t *e)
@@ -1595,92 +1594,71 @@ static void writeup_back_cb(lv_event_t *e)
 
 static void new_proj_pressed_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        open_new_proj_screen();
-    }
+    open_new_proj_screen();
 }
 
 static void demo_pressed_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        open_demo_screen();
-    }
+    open_demo_screen();
 }
 
 static void demo_selected_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
+    open_demo_popup();
+    char *text = lv_event_get_user_data(e);
+    lv_label_set_text(main_text_demo_popup, text);
+    char *description = "Basic description filler";
+    // Add code to change description text here
+    if (text == "Line")
     {
-        open_demo_popup();
-        char *text = lv_event_get_user_data(e);
-        lv_label_set_text(main_text_demo_popup, text);
-        char *description = "Basic description filler";
-        // Add code to change description text here
-        if (text == "Line")
-        {
-            description = "This program draws a simple line. It demonstrates consistent speed and direction.";
-            lv_label_set_text(sub_text_demo_popup, description);
-        }
-        else if (text == "Square")
-        {
-            description = "This programs draws a square. It demonstrates dimensional accuracy and the ability to stop and change direction in sharp angles.";
-            lv_label_set_text(sub_text_demo_popup, description);
-        }
-        else if (text == "Circle")
-        {
-            description = "This program draws a circle. It demonstrates the ability to draw a consistent arc.";
-            lv_label_set_text(sub_text_demo_popup, description);
-        }
-        else if (text == "Oval")
-        {
-            description = "This program draws an oval. It demonstrates the ability to transition smoothly between arcs with different radii.";
-            lv_label_set_text(sub_text_demo_popup, description);
-        }
-        else if (text == "Signature")
-        {
-            description = "This program draws a basic signature. It demonstrates smooth lines with complex geometry.";
-            lv_label_set_text(sub_text_demo_popup, description);
-        }
-        else // Complex
-        {
-            description = "This is a complex example that contains elements of all other demos, including curves, sharp changes in direction, and straight lines.";
-            lv_label_set_text(sub_text_demo_popup, description);
-        }
+        description = "This program draws a simple line. It demonstrates consistent speed and direction.";
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Square")
+    {
+        description = "This programs draws a square. It demonstrates dimensional accuracy and the ability to stop and change direction in sharp angles.";
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Circle")
+    {
+        description = "This program draws a circle. It demonstrates the ability to draw a consistent arc.";
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Oval")
+    {
+        description = "This program draws an oval. It demonstrates the ability to transition smoothly between arcs with different radii.";
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Signature")
+    {
+        description = "This program draws a basic signature. It demonstrates smooth lines with complex geometry.";
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else // Complex
+    {
+        description = "This is a complex example that contains elements of all other demos, including curves, sharp changes in direction, and straight lines.";
+        lv_label_set_text(sub_text_demo_popup, description);
     }
 }
 
 static void back_pressed_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        open_start_screen();
-    }
+    open_start_screen();
 }
 
 static void back_demo_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        lv_screen_load(demo_screen);
-    }
+    open_demo_screen();
 }
 
 static void usb_file_explorer_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        open_usb_explorer();
-    }
+    open_usb_explorer();
 }
 
 static void cloud_file_explorer_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        open_cloud_explorer();
-    }
+    open_cloud_explorer();
 }
 
 static void file_selected_cb(lv_event_t *e)
@@ -1702,10 +1680,7 @@ static void file_selected_cb(lv_event_t *e)
 
 static void quit_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        lv_sdl_quit();
-    }
+    lv_sdl_quit();
 }
 
 static void sidebar_event_cb(lv_event_t *e)
@@ -1727,11 +1702,15 @@ static void sidebar_event_cb(lv_event_t *e)
     }
 }
 
+static void start_program_cb(lv_event_t *e)
+{
+    gpio_write(pi_num, GPIO_START_OUT, 1); // Tell other Pi that program is starting
+    // system("scp some_file cnc@10.0.0.20:some/file/path")
+    open_program_running();
+}
+
 static void quit_program_cb(lv_event_t *e)
 {
-    if (lv_event_get_code(e) == LV_EVENT_CLICKED)
-    {
-        gpio_write(pi_num, GPIO_E_STOP, 1); // Activate E-Stop
-        open_start_screen();
-    }
+    gpio_write(pi_num, GPIO_E_STOP, 1); // Activate E-Stop
+    open_start_screen();
 }
