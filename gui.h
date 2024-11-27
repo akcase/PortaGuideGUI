@@ -23,12 +23,12 @@
  * PIGPIO Defines and Variables *
  ********************************/
 
-/* GPIO2 -> Pin 3 */
-#define GPIO_START_OUT 3
-/* GPIO3 -> Pin 5 */
-#define GPIO_RUN_IN 5
 /* GPIO4 -> Pin 7 */
-#define GPIO_E_STOP 7
+#define GPIO_START_OUT 4
+/* GPIO27 -> Pin 13 */
+#define GPIO_RUN_IN 27
+/* GPIO22 -> Pin 15 */
+#define GPIO_E_STOP 22
 
 int pi_num = 0;
 
@@ -524,9 +524,17 @@ void input_init()
 
 void program_running_cb(lv_indev_t *indev, lv_indev_data_t *data)
 {
-    if (gpio_read(pi_num, GPIO_RUN_IN) == PI_HIGH)
+    if (gpioRead(GPIO_RUN_IN) == PI_HIGH)
     {
         open_program_running();
+    }
+}
+
+void program_stopped_cb(int gpio, int level, uint32_t tick)
+{
+    if (level == PI_LOW)
+    {
+        open_program_done();
     }
 }
 
@@ -815,16 +823,19 @@ void style_init()
 void open_start_screen()
 {
     lv_screen_load(start_screen);
+    gpioWrite(GPIO_START_OUT, PI_LOW);
 }
 
 void open_info_screen()
 {
     lv_screen_load(info_screen);
+    gpioWrite(GPIO_E_STOP, PI_LOW);
 }
 
 void open_demo_screen()
 {
     lv_screen_load(demo_screen);
+    gpioWrite(GPIO_E_STOP, PI_LOW);
 }
 
 void open_demo_popup()
@@ -835,6 +846,7 @@ void open_demo_popup()
 void open_new_proj_screen()
 {
     lv_screen_load(new_proj_screen);
+    gpioWrite(GPIO_E_STOP, PI_LOW);
 }
 
 void open_file_confirm_screen()
@@ -1418,128 +1430,6 @@ void config_file_confirm_screen()
     lv_obj_center(start_label_file_confirm);
 }
 
-void config_usb_explorer()
-{
-    /* Set up file explorer */
-    usb_file_explorer = lv_file_explorer_create(NULL);
-    lv_file_explorer_set_sort(usb_file_explorer, LV_EXPLORER_SORT_KIND);
-    lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide");
-
-    // char *envvar = "HOME";
-    // char home_dir[LV_FS_MAX_PATH_LENGTH];
-    // strcpy(home_dir, "A:");
-    // /* get the user's home directory from the HOME environment variable*/
-    // strcat(home_dir, getenv(envvar));
-    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_HOME_DIR, home_dir);
-    // char video_dir[LV_FS_MAX_PATH_LENGTH];
-    // strcpy(video_dir, home_dir);
-    // strcat(video_dir, "/Videos");
-    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_VIDEO_DIR, video_dir);
-    // char picture_dir[LV_FS_MAX_PATH_LENGTH];
-    // strcpy(picture_dir, home_dir);
-    // strcat(picture_dir, "/Pictures");
-    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_PICTURES_DIR, picture_dir);
-    // char music_dir[LV_FS_MAX_PATH_LENGTH];
-    // strcpy(music_dir, home_dir);
-    // strcat(music_dir, "/Music");
-    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_MUSIC_DIR, music_dir);
-    // char document_dir[LV_FS_MAX_PATH_LENGTH];
-    // strcpy(document_dir, home_dir);
-    // strcat(document_dir, "/Documents");
-    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_DOCS_DIR, document_dir);
-
-    // lv_file_explorer_set_quick_access_path(usb_file_explorer, LV_EXPLORER_FS_DIR, "A:/");
-
-    lv_obj_add_event_cb(usb_file_explorer, file_selected_cb, LV_EVENT_ALL, NULL);
-
-    /* Button for show/hide sidebar menu */
-    lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(usb_file_explorer);
-    lv_obj_t *file_explorer_header = lv_file_explorer_get_header(usb_file_explorer);
-    lv_obj_t *file_explorer_main = lv_file_explorer_get_file_table(usb_file_explorer);
-
-    lv_obj_add_flag(file_explorer_quick_access, LV_OBJ_FLAG_HIDDEN);
-
-    // lv_obj_t *btn = lv_button_create(file_explorer_header);
-    // lv_obj_set_size(btn, 30, 30);
-    // lv_obj_set_style_radius(btn, 2, 0);
-    // lv_obj_set_style_pad_all(btn, 4, 0);
-    // lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
-    // lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
-    // lv_obj_add_event_cb(btn, sidebar_event_cb, LV_EVENT_VALUE_CHANGED, file_explorer_quick_access);
-    // lv_obj_t *label = lv_label_create(btn);
-    // lv_label_set_text(label, LV_SYMBOL_LIST);
-    // lv_obj_center(label);
-
-    /* Button for backing out of file explorer */
-    lv_obj_t *close_btn = lv_button_create(file_explorer_header);
-    lv_obj_set_size(close_btn, 100, 50);
-    lv_obj_set_style_radius(close_btn, 2, 0);
-    lv_obj_set_style_pad_all(close_btn, 4, 0);
-    lv_obj_align(close_btn, LV_ALIGN_LEFT_MID, 0, 0);
-    lv_obj_add_event_cb(close_btn, open_new_proj_screen, LV_EVENT_CLICKED, NULL);
-    lv_obj_t *close_label = lv_label_create(close_btn);
-    lv_label_set_text(close_label, "Close");
-    lv_obj_center(close_label);
-}
-
-void config_cloud_explorer()
-{
-    cloud_file_explorer = lv_file_explorer_create(NULL);
-    lv_file_explorer_set_sort(cloud_file_explorer, LV_EXPLORER_SORT_KIND);
-    lv_file_explorer_open_dir(cloud_file_explorer, "A:/media/PortaGuide/");
-
-    char *envvar = "HOME";
-    char home_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(home_dir, "A:");
-    /* get the user's home directory from the HOME environment variable*/
-    strcat(home_dir, getenv(envvar));
-    LV_LOG_USER("home_dir: %s\n", home_dir);
-    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_HOME_DIR, home_dir);
-    char video_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(video_dir, home_dir);
-    strcat(video_dir, "/Videos");
-    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_VIDEO_DIR, video_dir);
-    char picture_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(picture_dir, home_dir);
-    strcat(picture_dir, "/Pictures");
-    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_PICTURES_DIR, picture_dir);
-    char music_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(music_dir, home_dir);
-    strcat(music_dir, "/Music");
-    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_MUSIC_DIR, music_dir);
-    char document_dir[LV_FS_MAX_PATH_LENGTH];
-    strcpy(document_dir, home_dir);
-    strcat(document_dir, "/Documents");
-    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_DOCS_DIR, document_dir);
-
-    lv_file_explorer_set_quick_access_path(cloud_file_explorer, LV_EXPLORER_FS_DIR, "A:/");
-
-    /* Button for show/hide sidebar menu */
-    lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(cloud_file_explorer);
-    lv_obj_t *file_explorer_header = lv_file_explorer_get_header(cloud_file_explorer);
-    lv_obj_t *btn = lv_button_create(file_explorer_header);
-    lv_obj_set_size(btn, 30, 30);
-    lv_obj_set_style_radius(btn, 2, 0);
-    lv_obj_set_style_pad_all(btn, 4, 0);
-    lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
-    lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
-    lv_obj_add_event_cb(btn, sidebar_event_cb, LV_EVENT_VALUE_CHANGED, file_explorer_quick_access);
-    lv_obj_t *label = lv_label_create(btn);
-    lv_label_set_text(label, LV_SYMBOL_LIST);
-    lv_obj_center(label);
-
-    /* Button for backing out of file explorer */
-    lv_obj_t *close_btn = lv_button_create(file_explorer_header);
-    lv_obj_set_size(close_btn, 100, 50);
-    lv_obj_set_style_radius(close_btn, 2, 0);
-    lv_obj_set_style_pad_all(close_btn, 4, 0);
-    lv_obj_align(close_btn, LV_ALIGN_RIGHT_MID, 0, 0);
-    lv_obj_add_event_cb(close_btn, open_new_proj_screen, LV_EVENT_CLICKED, NULL);
-    lv_obj_t *close_label = lv_label_create(close_btn);
-    lv_label_set_text(close_label, "Close");
-    lv_obj_center(close_label);
-}
-
 void config_program_running()
 {
     program_running_screen = lv_obj_create(NULL);
@@ -1551,7 +1441,7 @@ void config_program_running()
     lv_obj_set_size(program_running_quit_button, 100, 75);
     lv_obj_add_style(program_running_quit_button, &style_back_btn_demo_popup, 0);
     lv_obj_add_style(program_running_quit_button, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_align(program_running_quit_button, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
+    lv_obj_set_pos(program_running_quit_button, 1024 - BACK_BTN_HORZ - 33, 600 - BACK_BTN_VERT - 30);
     lv_obj_add_event_cb(program_running_quit_button, quit_program_cb, LV_EVENT_CLICKED, NULL);
     program_running_quit_label = lv_label_create(program_running_quit_button);
     lv_obj_center(program_running_quit_label);
@@ -1694,9 +1584,7 @@ static void file_selected_cb(lv_event_t *e)
     if ((lv_event_get_code(e) == LV_EVENT_VALUE_CHANGED) && (lv_event_get_code(e) != LV_EVENT_READY))
     {
         file_path = lv_file_explorer_get_current_path(obj);
-        printf("File Path: %s\n", file_path);
         file_name = lv_file_explorer_get_selected_file_name(obj);
-        printf("File Name: %s\n", file_name);
         memset(&file_path_and_name[0], 0, sizeof(file_path_and_name));
         strcat(file_path_and_name, file_path);
         strcat(file_path_and_name, file_name);
@@ -1734,13 +1622,14 @@ static void sidebar_event_cb(lv_event_t *e)
 
 static void start_program_cb(lv_event_t *e)
 {
-    gpio_write(pi_num, GPIO_START_OUT, 1); // Tell other Pi that program is starting
+    gpioWrite(GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
     // system("scp some_file cnc@10.0.0.20:some/file/path")
     open_program_running();
 }
 
 static void quit_program_cb(lv_event_t *e)
 {
-    gpio_write(pi_num, GPIO_E_STOP, 1); // Activate E-Stop
+    gpioWrite(GPIO_E_STOP, PI_HIGH); // Activate E-Stop
+    gpioWrite(GPIO_START_OUT, PI_LOW);
     open_start_screen();
 }
