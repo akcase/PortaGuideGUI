@@ -37,7 +37,7 @@ LV_IMAGE_DECLARE(usb_symbol);
 
 char *file_path;
 char *file_name;
-char *file_path_and_name[128];
+char file_path_and_name[128];
 
 lv_display_t *display;
 
@@ -832,7 +832,7 @@ void open_usb_explorer()
 {
     usb_file_explorer = lv_file_explorer_create(NULL);
     lv_file_explorer_set_sort(usb_file_explorer, LV_EXPLORER_SORT_KIND);
-    lv_file_explorer_open_dir(usb_file_explorer, "/media/PortaGuide");
+    lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide");
     lv_obj_add_event_cb(usb_file_explorer, file_selected_cb, LV_EVENT_ALL, NULL);
     lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(usb_file_explorer);
     lv_obj_t *file_explorer_header = lv_file_explorer_get_header(usb_file_explorer);
@@ -1597,15 +1597,17 @@ static void sidebar_event_cb(lv_event_t *e)
 static void start_program_cb(lv_event_t *e)
 {
     char cmd_1[255];
-    snprintf(cmd_1, sizeof(cmd_1), "cp %s /home/PortaGuide/", file_path_and_name);
+    char *new_file_path_and_name = &file_path_and_name[2];
+    snprintf(cmd_1, sizeof(cmd_1), "cp %s /home/PortaGuide/", new_file_path_and_name);
     system(cmd_1);
-    printf("%s\n", cmd_1);
     char cmd_2[255];
     snprintf(cmd_2, sizeof(cmd_2), "cp %s output_file.txt", file_name);
     system(cmd_2);
-    printf("%s\n", cmd_2);
+    char cmd_3[255];
+    snprintf(cmd_3, sizeof(cmd_3), "rm %s", file_name);
+    system(cmd_3);
     gpio_write(pi_num, GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
-    // system("scp some_file cnc@10.0.0.20:some/file/path")
+    system("scp output_file.txt cnc@10.0.0.20:/home/cnc/linuxcnc/nc_files/");
     open_program_running();
 }
 
