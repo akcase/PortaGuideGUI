@@ -522,14 +522,6 @@ void input_init()
     lv_sdl_mouse_create();
 }
 
-void program_running_cb(lv_indev_t *indev, lv_indev_data_t *data)
-{
-    if (gpioRead(GPIO_RUN_IN) == PI_HIGH)
-    {
-        open_program_running();
-    }
-}
-
 void program_stopped_cb(int gpio, int level, uint32_t tick)
 {
     if (level == PI_LOW)
@@ -538,27 +530,9 @@ void program_stopped_cb(int gpio, int level, uint32_t tick)
     }
 }
 
-void pin_cb_init()
-{
-    gpio_run_in = lv_indev_create();
-    lv_indev_set_type(gpio_run_in, LV_INDEV_TYPE_POINTER);
-    lv_indev_set_read_cb(gpio_run_in, program_running_cb);
-}
-
 /***********************
  * Function Definition *
  ***********************/
-
-// void program_running_cb(int pi, unsigned int user_gpio, unsigned int level, uint32_t tick)
-// {
-//     open_program_running();
-//     printf("In program_running_cb\n");
-// }
-
-// void program_stopped_cb(int pi, unsigned int user_gpio, unsigned int level, uint32_t tick)
-// {
-//     open_program_done();
-// }
 
 static lv_color_t darken(const lv_color_filter_dsc_t *dsc, lv_color_t color, lv_opa_t opa)
 {
@@ -823,19 +797,19 @@ void style_init()
 void open_start_screen()
 {
     lv_screen_load(start_screen);
-    gpioWrite(GPIO_START_OUT, PI_LOW);
+    gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
 }
 
 void open_info_screen()
 {
     lv_screen_load(info_screen);
-    gpioWrite(GPIO_E_STOP, PI_LOW);
+    gpio_write(pi_num, GPIO_E_STOP, PI_LOW);
 }
 
 void open_demo_screen()
 {
     lv_screen_load(demo_screen);
-    gpioWrite(GPIO_E_STOP, PI_LOW);
+    gpio_write(pi_num, GPIO_E_STOP, PI_LOW);
 }
 
 void open_demo_popup()
@@ -846,7 +820,7 @@ void open_demo_popup()
 void open_new_proj_screen()
 {
     lv_screen_load(new_proj_screen);
-    gpioWrite(GPIO_E_STOP, PI_LOW);
+    gpio_write(pi_num, GPIO_E_STOP, PI_LOW);
 }
 
 void open_file_confirm_screen()
@@ -1622,14 +1596,14 @@ static void sidebar_event_cb(lv_event_t *e)
 
 static void start_program_cb(lv_event_t *e)
 {
-    gpioWrite(GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
+    gpio_write(pi_num, GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
     // system("scp some_file cnc@10.0.0.20:some/file/path")
     open_program_running();
 }
 
 static void quit_program_cb(lv_event_t *e)
 {
-    gpioWrite(GPIO_E_STOP, PI_HIGH); // Activate E-Stop
-    gpioWrite(GPIO_START_OUT, PI_LOW);
+    gpio_write(pi_num, GPIO_E_STOP, PI_HIGH); // Activate E-Stop
+    gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
     open_start_screen();
 }
