@@ -832,7 +832,7 @@ void open_usb_explorer()
 {
     usb_file_explorer = lv_file_explorer_create(NULL);
     lv_file_explorer_set_sort(usb_file_explorer, LV_EXPLORER_SORT_KIND);
-    lv_file_explorer_open_dir(usb_file_explorer, "A:/media/PortaGuide");
+    lv_file_explorer_open_dir(usb_file_explorer, "/media/PortaGuide");
     lv_obj_add_event_cb(usb_file_explorer, file_selected_cb, LV_EVENT_ALL, NULL);
     lv_obj_t *file_explorer_quick_access = lv_file_explorer_get_quick_access_area(usb_file_explorer);
     lv_obj_t *file_explorer_header = lv_file_explorer_get_header(usb_file_explorer);
