@@ -37,7 +37,7 @@ LV_IMAGE_DECLARE(usb_symbol);
 
 char *file_path;
 char *file_name;
-char *file_path_and_name[255];
+char *file_path_and_name[128];
 
 lv_display_t *display;
 
@@ -1596,6 +1596,12 @@ static void sidebar_event_cb(lv_event_t *e)
 
 static void start_program_cb(lv_event_t *e)
 {
+    char cmd_1[255];
+    snprintf(cmd_1, sizeof(cmd_1), "cp %s /home/PortaGuide/", file_path_and_name);
+    system(cmd_1);
+    char cmd_2[255];
+    snprintf(cmd_2, sizeof(cmd_2), "cp %s output_file.txt", file_name);
+    system(cmd_2);
     gpio_write(pi_num, GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
     // system("scp some_file cnc@10.0.0.20:some/file/path")
     open_program_running();
