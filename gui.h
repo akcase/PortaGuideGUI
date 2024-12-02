@@ -522,7 +522,7 @@ void input_init()
     lv_sdl_mouse_create();
 }
 
-void program_stopped_cb(int gpio, int level, uint32_t tick)
+void program_stopped_cb(int pi, unsigned user_gpio, unsigned level, uint32_t tick, void *userdata)
 {
     if (level == PI_LOW)
     {
