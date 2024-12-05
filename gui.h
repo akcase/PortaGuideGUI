@@ -465,6 +465,8 @@ static void quit_cb(lv_event_t *e);
 
 static void sidebar_event_cb(lv_event_t *e);
 
+static void estop_pressed_cb(lv_event_t *e);
+
 static void start_demo_program_cb(lv_event_t *e);
 
 static void start_program_cb(lv_event_t *e);
@@ -829,6 +831,7 @@ void open_start_screen()
 {
     lv_screen_load(start_screen);
     gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
+    gpio_write(pi_num, GPIO_HOMING, PI_LOW);
 }
 
 void open_info_screen()
@@ -1481,6 +1484,32 @@ void config_homing_screen()
     lv_obj_set_size(homing_screen, 1024, 600);
     lv_obj_center(homing_screen);
     lv_obj_add_style(homing_screen, &style_start_screen, 0);
+
+    homing_label = lv_label_create(homing_screen);
+    lv_obj_align(homing_label, LV_ALIGN_TOP_MID, 0, 50);
+    lv_obj_add_style(homing_label, &style_main_text_demo_popup, 0);
+    lv_label_set_text(homing_label, "Program was Stopped");
+
+    homing_msg_1 = lv_label_create(homing_screen);
+    lv_obj_align_to(homing_msg_1, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+    lv_obj_add_style(homing_msg_1, &style_filepath_file_confirm, 0);
+    lv_label_set_text(homing_msg_1, "Please move the robot back to it's home position");
+
+    homing_msg_2 = lv_label_create(homing_screen);
+    lv_obj_align_to(homing_msg_2, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+    lv_obj_add_style(homing_msg_2, &style_filepath_file_confirm, 0);
+    lv_label_set_text(homing_msg_2, "When done, press the \"Complete\" button");
+
+    homing_done_btn = lv_obj_create(homing_screen);
+    lv_obj_set_size(homing_done_btn, 100, 75);
+    lv_obj_add_style(homing_done_btn, &style_start_btn_demo_popup, 0);
+    lv_obj_add_style(homing_done_btn, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_init_draw_line_dsc(homing_done_btn, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
+    lv_obj_add_event_cb(homing_done_btn, back_pressed_cb, LV_EVENT_CLICKED, NULL);
+    homing_done_label = lv_label_create(homing_done_btn);
+    lv_obj_center(homing_done_label);
+    lv_obj_add_style(homing_done_label, &style_back_label, 0);
+    lv_label_set_text(homing_done_label, "Complete");
 }
 
 /*************
@@ -1682,5 +1711,6 @@ static void quit_program_cb(lv_event_t *e)
 {
     gpio_write(pi_num, GPIO_E_STOP, PI_HIGH); // Activate E-Stop
     gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
-    open_start_screen();
+    gpio_write(pi_num, GPIO_HOMING, PI_HIGH);
+    open_homing_screen();
 }
