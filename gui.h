@@ -1014,7 +1014,7 @@ void config_info_screen()
     info_btn_info_screen = lv_obj_create(info_screen);
     lv_obj_add_style(info_btn_info_screen, &style_btn_info_screen, 0);
     lv_obj_add_style(info_btn_info_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(info_btn_info_screen, LV_GRID_ALIGN_STRETCH, 1, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_set_grid_cell(info_btn_info_screen, LV_GRID_ALIGN_STRETCH, 1, 2, LV_GRID_ALIGN_STRETCH, 3, 1);
     lv_obj_add_event_cb(info_btn_info_screen, info_writeup_cb, LV_EVENT_CLICKED, NULL);
     info_label_info_screen = lv_label_create(info_btn_info_screen);
     lv_obj_add_style(info_label_info_screen, &style_label_info_screen, 0);
@@ -1024,22 +1024,22 @@ void config_info_screen()
     help_btn_info_screen = lv_obj_create(info_screen);
     lv_obj_add_style(help_btn_info_screen, &style_btn_info_screen, 0);
     lv_obj_add_style(help_btn_info_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(help_btn_info_screen, LV_GRID_ALIGN_STRETCH, 3, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_set_grid_cell(help_btn_info_screen, LV_GRID_ALIGN_STRETCH, 4, 2, LV_GRID_ALIGN_STRETCH, 3, 1);
     lv_obj_add_event_cb(help_btn_info_screen, help_writeup_cb, LV_EVENT_CLICKED, NULL);
     help_label_info_screen = lv_label_create(help_btn_info_screen);
     lv_obj_add_style(help_label_info_screen, &style_label_info_screen, 0);
     lv_label_set_text(help_label_info_screen, "Help");
     lv_obj_center(help_label_info_screen);
     /* Tutorial Button */
-    tutorial_btn_info_screen = lv_obj_create(info_screen);
-    lv_obj_add_style(tutorial_btn_info_screen, &style_btn_info_screen, 0);
-    lv_obj_add_style(tutorial_btn_info_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(tutorial_btn_info_screen, LV_GRID_ALIGN_STRETCH, 5, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
-    lv_obj_add_event_cb(tutorial_btn_info_screen, tutorial_cb, LV_EVENT_CLICKED, NULL);
-    tutorial_label_info_screen = lv_label_create(tutorial_btn_info_screen);
-    lv_obj_add_style(tutorial_label_info_screen, &style_label_info_screen, 0);
-    lv_label_set_text(tutorial_label_info_screen, "Tutorial");
-    lv_obj_center(tutorial_label_info_screen);
+    // tutorial_btn_info_screen = lv_obj_create(info_screen);
+    // lv_obj_add_style(tutorial_btn_info_screen, &style_btn_info_screen, 0);
+    // lv_obj_add_style(tutorial_btn_info_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    // lv_obj_set_grid_cell(tutorial_btn_info_screen, LV_GRID_ALIGN_STRETCH, 5, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    // lv_obj_add_event_cb(tutorial_btn_info_screen, tutorial_cb, LV_EVENT_CLICKED, NULL);
+    // tutorial_label_info_screen = lv_label_create(tutorial_btn_info_screen);
+    // lv_obj_add_style(tutorial_label_info_screen, &style_label_info_screen, 0);
+    // lv_label_set_text(tutorial_label_info_screen, "Tutorial");
+    // lv_obj_center(tutorial_label_info_screen);
     /* Back Button */
     back_btn_info_screen = lv_obj_create(info_screen);
     lv_obj_add_style(back_btn_info_screen, &style_btn_info_screen, 0);
