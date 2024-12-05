@@ -175,9 +175,11 @@ static lv_obj_t *help_writeup;
 /* FAQ Headers */
 static lv_obj_t *FAQ_Q1;
 static lv_obj_t *FAQ_Q2;
+static lv_obj_t *FAQ_Q3;
 /* FAQ Answers */
 static lv_obj_t *FAQ_A1;
 static lv_obj_t *FAQ_A2;
+static lv_obj_t *FAQ_A3;
 /* Other */
 static lv_obj_t *help_back_btn;
 static lv_obj_t *help_back_label;
@@ -1168,6 +1170,19 @@ void config_writeup_screens()
     lv_label_set_text(FAQ_A2, FAQ_A2_text);
     lv_label_set_long_mode(FAQ_A2, LV_LABEL_LONG_WRAP);
     lv_obj_align_to(FAQ_A2, FAQ_Q2, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /***** FAQ 3 *****/
+    /* Question */
+    FAQ_Q3 = lv_label_create(help_writeup);
+    lv_obj_add_style(FAQ_Q3, &style_header, 0);
+    lv_label_set_text(FAQ_Q3, FAQ_Q3_text);
+    lv_obj_align_to(FAQ_Q3, FAQ_A2, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /* Answer */
+    FAQ_A3 = lv_label_create(help_writeup);
+    lv_obj_add_style(FAQ_A3, &style_text, 0);
+    lv_obj_set_size(FAQ_A3, 950, LV_SIZE_CONTENT);
+    lv_label_set_text(FAQ_A3, FAQ_A3_text);
+    lv_label_set_long_mode(FAQ_A3, LV_LABEL_LONG_WRAP);
+    lv_obj_align_to(FAQ_A3, FAQ_Q3, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
     /***** Back Button *****/
     help_back_btn = lv_obj_create(help_writeup);
     lv_obj_add_style(help_back_btn, &style_btn_demo_screen, 0);

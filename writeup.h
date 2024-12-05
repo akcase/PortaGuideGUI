@@ -21,11 +21,14 @@ char people_text_text[] = "PortaGuide was created by Ryan, Carlos, Edison, and A
  * Help Writeup *
  ****************/
 
-char FAQ_Q1_text[] = "Example Question 1";
-char FAQ_A1_text[] = "This is the example answer to example question 1. This should have a brief but detailed answer to the question.";
+char FAQ_Q1_text[] = "What attachments can I use?";
+char FAQ_A1_text[] = "Currently, we have attachments for drawing with a standard sharpie and laser engraving, but these attachments are very easy to switch out for new attachments. It is worth noting that the laser engraver should only be used with appropriate protections in place.";
 
-char FAQ_Q2_text[] = "Example Question 2";
-char FAQ_A2_text[] = "This is the example answer to example question 2. This should have a brief but detailed answer to the question.";
+char FAQ_Q2_text[] = "How do I run one of the demos?";
+char FAQ_A2_text[] = "Demos can be run in the \"Demos\" page. We have 6 available for each attachment at this time to demonstrate a variety a different skills and difficulties.";
+
+char FAQ_Q3_text[] = "How do I run a custom program?";
+char FAQ_A2_text[] = "For this, you can load a file onto a USB flash drive and plug it into the Raspberry Pi. This will allow you to select from any of the files on the flash drive to run. *Note* This file needs to be a .ngc file that is properly formatted and terminated."
 
 /************
  * Tutorial *
