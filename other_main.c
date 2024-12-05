@@ -77,6 +77,7 @@ void config_screens()
     config_file_confirm_screen();
     config_program_running();
     config_program_done();
+    config_homing_screen();
     config_writeup_screens();
 }
 

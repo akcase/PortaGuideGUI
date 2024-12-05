@@ -1504,7 +1504,7 @@ void config_homing_screen()
     lv_obj_set_size(homing_done_btn, 100, 75);
     lv_obj_add_style(homing_done_btn, &style_start_btn_demo_popup, 0);
     lv_obj_add_style(homing_done_btn, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_init_draw_line_dsc(homing_done_btn, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
+    lv_obj_align(homing_done_btn, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
     lv_obj_add_event_cb(homing_done_btn, back_pressed_cb, LV_EVENT_CLICKED, NULL);
     homing_done_label = lv_label_create(homing_done_btn);
     lv_obj_center(homing_done_label);
