@@ -1075,7 +1075,7 @@ void config_writeup_screens()
     inspiration_header = lv_label_create(info_writeup);
     lv_obj_add_style(inspiration_header, &style_header, 0);
     lv_label_set_text(inspiration_header, inspiration_header_text);
-    lv_obj_align_to(inspiration_header, info_writeup, LV_ALIGN_TOP_MID, 0, 25);
+    lv_obj_align_to(inspiration_header, info_writeup, LV_ALIGN_TOP_MID, 0, 100);
     /* Text */
     inspiration_text = lv_label_create(info_writeup);
     lv_obj_add_style(inspiration_text, &style_text, 0);
@@ -1149,7 +1149,7 @@ void config_writeup_screens()
     FAQ_Q1 = lv_label_create(help_writeup);
     lv_obj_add_style(FAQ_Q1, &style_header, 0);
     lv_label_set_text(FAQ_Q1, FAQ_Q1_text);
-    lv_obj_align_to(FAQ_Q1, help_writeup, LV_ALIGN_TOP_MID, 0, 25);
+    lv_obj_align_to(FAQ_Q1, help_writeup, LV_ALIGN_TOP_MID, 0, 100);
     /* Answer */
     FAQ_A1 = lv_label_create(help_writeup);
     lv_obj_add_style(FAQ_A1, &style_text, 0);
@@ -1209,7 +1209,7 @@ void config_writeup_screens()
     tutorial_header = lv_label_create(tutorial_screen);
     lv_obj_add_style(tutorial_header, &style_header, 0);
     lv_label_set_text(tutorial_header, tutorial_text);
-    lv_obj_align_to(tutorial_header, tutorial_screen, LV_ALIGN_TOP_MID, 0, 25);
+    lv_obj_align_to(tutorial_header, tutorial_screen, LV_ALIGN_TOP_MID, 0, 100);
     /***** QR Code *****/
     qr_code = lv_image_create(tutorial_screen);
     lv_obj_set_style_pad_top(qr_code, 50, 0);
