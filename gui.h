@@ -29,6 +29,8 @@
 #define GPIO_RUN_IN 27
 /* GPIO22 -> Pin 15 */
 #define GPIO_E_STOP 22
+/* GPIO23 -> Pin 18 */
+#define GPIO_HOMING 23
 
 int pi_num = 0;
 
@@ -38,6 +40,9 @@ LV_IMAGE_DECLARE(usb_symbol);
 char *file_path;
 char *file_name;
 char file_path_and_name[128];
+
+char demo_file_name[64];
+char demo_file_path_and_name[128];
 
 lv_display_t *display;
 
@@ -354,6 +359,23 @@ static lv_obj_t *program_running_quit_button;
 static lv_obj_t *program_running_quit_label;
 
 /**
+ * Homing Screen
+ * 
+ * This screen will be opened if the E-Stop is triggered. It will set 
+ * the Homing Pin high to signal to the Python script on the CNC Pi 
+ * that the arm is being manually homed. It will have a message on the
+ * screen to say that the program was stopped, and also a message to
+ * prompt the user to home the arm.
+ */
+static lv_obj_t *homing_screen;
+static lv_obj_t *homing_label;
+static lv_obj_t *homing_msg_1;
+static lv_obj_t *homing_msg_2;
+static lv_obj_t *homing_done_btn;
+static lv_obj_t *homing_done_label;
+
+
+/**
  * Program Done Screen
  *
  * This screen will be opened once the program stops running. It will
@@ -443,6 +465,8 @@ static void quit_cb(lv_event_t *e);
 
 static void sidebar_event_cb(lv_event_t *e);
 
+static void start_demo_program_cb(lv_event_t *e);
+
 static void start_program_cb(lv_event_t *e);
 
 static void quit_program_cb(lv_event_t *e);
@@ -507,6 +531,12 @@ void config_program_running();
 
 void open_program_running();
 
+/***** Homing Screen *****/
+
+void config_homing_screen();
+
+void open_homing_screen();
+
 /***** Program Done Screen *****/
 
 void config_program_done();
@@ -527,6 +557,7 @@ void program_stopped_cb(int pi, unsigned user_gpio, unsigned level, uint32_t tic
     if (level == PI_LOW)
     {
         open_program_done();
+        gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
     }
 }
 
@@ -864,6 +895,11 @@ void open_program_running()
 void open_program_done()
 {
     lv_screen_load(program_done_screen);
+}
+
+void open_homing_screen()
+{
+    lv_screen_load(homing_screen);
 }
 
 void open_info_writeup()
@@ -1235,10 +1271,10 @@ void config_demo_screen()
     lv_obj_add_style(demo_btn_5_demo_screen, &style_btn_demo_screen, 0);
     lv_obj_add_style(demo_btn_5_demo_screen, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(demo_btn_5_demo_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
-    lv_obj_add_event_cb(demo_btn_5_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Signature");
+    lv_obj_add_event_cb(demo_btn_5_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Star");
     demo_label_5_demo_screen = lv_label_create(demo_btn_5_demo_screen);
     lv_obj_add_style(demo_label_5_demo_screen, &style_label_demo_screen, 0);
-    lv_label_set_text(demo_label_5_demo_screen, "Signature");
+    lv_label_set_text(demo_label_5_demo_screen, "Star");
     lv_obj_center(demo_label_5_demo_screen);
     /* Demo Button 6 */
     demo_btn_6_demo_screen = lv_obj_create(demo_screen);
@@ -1304,7 +1340,7 @@ void config_demo_popup()
     lv_obj_add_style(start_btn_demo_popup, &style_start_btn_demo_popup, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(start_btn_demo_popup, LV_GRID_ALIGN_END, 5, 1, LV_GRID_ALIGN_END, 3, 1);
     lv_obj_set_size(start_btn_demo_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
-    lv_obj_add_event_cb(start_btn_demo_popup, start_program_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(start_btn_demo_popup, start_demo_program_cb, LV_EVENT_CLICKED, NULL);
     start_label_demo_popup = lv_label_create(start_btn_demo_popup);
     lv_obj_add_style(start_label_demo_popup, &style_back_label, 0);
     lv_label_set_text(start_label_demo_popup, "Start");
@@ -1337,19 +1373,6 @@ void config_new_proj_screen()
     lv_obj_add_style(usb_file_label_new_proj_screen, &style_file_label_new_proj_screen, 0);
     lv_obj_set_align(usb_file_label_new_proj_screen, LV_ALIGN_BOTTOM_MID);
     lv_label_set_text(usb_file_label_new_proj_screen, "Select from USB");
-    /* Cloud File Explorer Button */
-    // cloud_file_btn_new_proj_screen = lv_obj_create(new_proj_screen);
-    // lv_obj_add_style(cloud_file_btn_new_proj_screen, &style_file_btn_new_proj_screen, 0);
-    // lv_obj_add_style(cloud_file_btn_new_proj_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    // lv_obj_set_grid_cell(cloud_file_btn_new_proj_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 2, 1);
-    // lv_obj_add_event_cb(cloud_file_btn_new_proj_screen, cloud_file_explorer_cb, LV_EVENT_CLICKED, NULL);
-    // cloud_file_image_new_proj_screen = lv_image_create(cloud_file_btn_new_proj_screen);
-    // lv_image_set_src(cloud_file_image_new_proj_screen, &cloud_symbol);
-    // lv_obj_center(cloud_file_image_new_proj_screen);
-    // cloud_file_label_new_proj_screen = lv_label_create(cloud_file_btn_new_proj_screen);
-    // lv_obj_add_style(cloud_file_label_new_proj_screen, &style_file_label_new_proj_screen, 0);
-    // lv_obj_set_align(cloud_file_label_new_proj_screen, LV_ALIGN_BOTTOM_MID);
-    // lv_label_set_text(cloud_file_label_new_proj_screen, "Select from Cloud");
     /* Back Button */
     back_btn_new_proj_screen = lv_obj_create(new_proj_screen);
     lv_obj_add_style(back_btn_new_proj_screen, &style_btn_new_proj_screen, 0);
@@ -1452,6 +1475,14 @@ void config_program_done()
     lv_label_set_text(program_done_label, "Program is Done Running");
 }
 
+void config_homing_screen()
+{
+    homing_screen = lv_obj_create(NULL);
+    lv_obj_set_size(homing_screen, 1024, 600);
+    lv_obj_center(homing_screen);
+    lv_obj_add_style(homing_screen, &style_start_screen, 0);
+}
+
 /*************
  * Callbacks *
  *************/
@@ -1501,26 +1532,46 @@ static void demo_selected_cb(lv_event_t *e)
     if (text == "Line")
     {
         description = "This program draws a simple line. It demonstrates consistent speed and direction.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/LINE.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "LINE.ngc");
         lv_label_set_text(sub_text_demo_popup, description);
     }
     else if (text == "Square")
     {
         description = "This programs draws a square. It demonstrates dimensional accuracy and the ability to stop and change direction in sharp angles.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/square.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "square.ngc");
         lv_label_set_text(sub_text_demo_popup, description);
     }
     else if (text == "Circle")
     {
         description = "This program draws a circle. It demonstrates the ability to draw a consistent arc.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/CIRCLE.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "CIRCLE.ngc");
         lv_label_set_text(sub_text_demo_popup, description);
     }
     else if (text == "Oval")
     {
         description = "This program draws an oval. It demonstrates the ability to transition smoothly between arcs with different radii.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/OVAL.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "OVAL.ngc");
         lv_label_set_text(sub_text_demo_popup, description);
     }
-    else if (text == "Signature")
+    else if (text == "Star")
     {
         description = "This program draws a basic signature. It demonstrates smooth lines with complex geometry.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/STAR.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "STAR.ngc");
         lv_label_set_text(sub_text_demo_popup, description);
     }
     else // Complex
@@ -1594,21 +1645,37 @@ static void sidebar_event_cb(lv_event_t *e)
     }
 }
 
+static void start_demo_program_cb(lv_event_t *e)
+{
+    open_program_running();
+    char cmd_1[255];
+    snprintf(cmd_1, sizeof(cmd_1), "cp %s /home/PortaGuide/", demo_file_path_and_name);
+    system(cmd_1);
+    char cmd_2[255];
+    snprintf(cmd_2, sizeof(cmd_2), "cp %s output_file.ngc", demo_file_name);
+    system(cmd_2);
+    char cmd_3[255];
+    snprintf(cmd_3, sizeof(cmd_3), "rm %s", demo_file_name);
+    system(cmd_3);
+    system("scp output_file.ngc cnc@10.0.0.20:/home/cnc/Desktop/PortaGuide/");
+    gpio_write(pi_num, GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
+}
+
 static void start_program_cb(lv_event_t *e)
 {
+    open_program_running();
     char cmd_1[255];
     char *new_file_path_and_name = &file_path_and_name[2];
     snprintf(cmd_1, sizeof(cmd_1), "cp %s /home/PortaGuide/", new_file_path_and_name);
     system(cmd_1);
     char cmd_2[255];
-    snprintf(cmd_2, sizeof(cmd_2), "cp %s output_file.txt", file_name);
+    snprintf(cmd_2, sizeof(cmd_2), "cp %s output_file.ngc", file_name);
     system(cmd_2);
     char cmd_3[255];
     snprintf(cmd_3, sizeof(cmd_3), "rm %s", file_name);
     system(cmd_3);
+    system("scp output_file.ngc cnc@10.0.0.20:/home/cnc/Desktop/PortaGuide/");
     gpio_write(pi_num, GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
-    system("scp output_file.txt cnc@10.0.0.20:/home/cnc/linuxcnc/nc_files/");
-    open_program_running();
 }
 
 static void quit_program_cb(lv_event_t *e)

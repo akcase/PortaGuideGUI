@@ -52,6 +52,19 @@ void pigpiod_init()
     } else {
         printf("E-Stop signal not initialized\n");
     }
+    /**
+     * Homing Signal
+     * From: GUI Pi
+     * To: LinuxCNC Pi
+     * This will signal to the Python script that the arm
+     * is being manually homed.
+     */
+    if(set_mode(pi_num, GPIO_HOMING, PI_OUTPUT) == 0) {
+        set_pull_up_down(pi_num, GPIO_HOMING, PI_PUD_DOWN);
+        gpio_write(pi_num, GPIO_HOMING, PI_LOW);
+    } else {
+        printf("Homing signal not initialized\n");
+    }
 }
 
 void config_screens()
