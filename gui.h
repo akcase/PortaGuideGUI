@@ -1008,7 +1008,7 @@ void config_info_screen()
     /* Subtext */
     sub_label_info_screen = lv_label_create(info_screen);
     lv_obj_add_style(sub_label_info_screen, &style_sub_label_info_screen, 0);
-    lv_label_set_text(sub_label_info_screen, "This is a brief description of what this screen is. Here, you can find information about what PortaGuide is and how it was created, help guides to make using PortaGuide easier, as well as a tutorial to see the entire process from start to finish.");
+    lv_label_set_text(sub_label_info_screen, info_text);
     lv_label_set_long_mode(sub_label_info_screen, LV_LABEL_LONG_WRAP);
     lv_obj_set_width(sub_label_info_screen, 750);
     lv_obj_set_grid_cell(sub_label_info_screen, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_START, 2, 1);

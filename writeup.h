@@ -1,6 +1,12 @@
 #ifndef WRITEUP_H
 #define WRITEUP_H
 
+/**********************
+ * Information Screen *
+ **********************/
+
+char info_text[] = "In the \"Information\" tab, you will find information on what this project is, how it was made, and who helped create it. In the \"Help\" tab, there are some reequently asked questions that will help you use PortaGuide."
+
 /***********************
  * Information Writeup *
  ***********************/
