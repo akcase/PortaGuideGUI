@@ -1491,12 +1491,12 @@ void config_homing_screen()
     lv_label_set_text(homing_label, "Program was Stopped");
 
     homing_msg_1 = lv_label_create(homing_screen);
-    lv_obj_align_to(homing_msg_1, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+    lv_obj_align_to(homing_msg_1, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 100);
     lv_obj_add_style(homing_msg_1, &style_filepath_file_confirm, 0);
     lv_label_set_text(homing_msg_1, "Please move the robot back to it's home position");
 
     homing_msg_2 = lv_label_create(homing_screen);
-    lv_obj_align_to(homing_msg_2, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+    lv_obj_align_to(homing_msg_2, homing_msg_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
     lv_obj_add_style(homing_msg_2, &style_filepath_file_confirm, 0);
     lv_label_set_text(homing_msg_2, "When done, press the \"Complete\" button");
 
