@@ -121,7 +121,7 @@ static lv_obj_t *back_label_info_screen;
 static lv_style_t style_btn_info_screen;
 static lv_style_t style_label_info_screen;
 /* Layout */
-static int32_t col_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+static int32_t col_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 static int32_t row_info_screen[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 
 /*************************
