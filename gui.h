@@ -831,6 +831,7 @@ void open_start_screen()
 {
     lv_screen_load(start_screen);
     gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
+    gpio_write(pi_num, GPIO_E_STOP, PI_LOW);
     gpio_write(pi_num, GPIO_HOMING, PI_LOW);
 }
 
@@ -1492,13 +1493,13 @@ void config_homing_screen()
 
     homing_msg_1 = lv_label_create(homing_screen);
     lv_label_set_text(homing_msg_1, "Please move the robot back to it's home position");
-    lv_obj_align_to(homing_msg_1, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 100);
     lv_obj_add_style(homing_msg_1, &style_filepath_file_confirm, 0);
+    lv_obj_align_to(homing_msg_1, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 100);
 
     homing_msg_2 = lv_label_create(homing_screen);
     lv_label_set_text(homing_msg_2, "When done, press the \"Complete\" button");
-    lv_obj_align_to(homing_msg_2, homing_msg_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
     lv_obj_add_style(homing_msg_2, &style_filepath_file_confirm, 0);
+    lv_obj_align_to(homing_msg_2, homing_msg_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
 
     homing_done_btn = lv_obj_create(homing_screen);
     lv_obj_set_size(homing_done_btn, 125, 75);
@@ -1506,6 +1507,7 @@ void config_homing_screen()
     lv_obj_add_style(homing_done_btn, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_align(homing_done_btn, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
     lv_obj_add_event_cb(homing_done_btn, back_pressed_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_remove_flag(homing_done_btn, LV_OBJ_FLAG_SCROLLABLE);
     homing_done_label = lv_label_create(homing_done_btn);
     lv_obj_center(homing_done_label);
     lv_obj_add_style(homing_done_label, &style_back_label, 0);
