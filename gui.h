@@ -1520,7 +1520,7 @@ void config_homing_screen()
     lv_obj_set_size(homing_done_btn, 125, 75);
     lv_obj_add_style(homing_done_btn, &style_start_btn_demo_popup, 0);
     lv_obj_add_style(homing_done_btn, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_align(homing_done_btn, LV_ALIGN_BOTTOM_RIGHT, -50, -50);
+    lv_obj_set_pos(homing_done_btn, 1024 - 125 - 33, 600 - BACK_BTN_VERT - 30);
     lv_obj_add_event_cb(homing_done_btn, back_pressed_cb, LV_EVENT_CLICKED, NULL);
     lv_obj_remove_flag(homing_done_btn, LV_OBJ_FLAG_SCROLLABLE);
     homing_done_label = lv_label_create(homing_done_btn);
@@ -1704,6 +1704,7 @@ static void start_demo_program_cb(lv_event_t *e)
     snprintf(cmd_3, sizeof(cmd_3), "rm %s", demo_file_name);
     system(cmd_3);
     system("scp output_file.ngc cnc@10.0.0.20:/home/cnc/Desktop/PortaGuide/");
+    lv_delay_ms(200);
     gpio_write(pi_num, GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
 }
 
@@ -1721,6 +1722,7 @@ static void start_program_cb(lv_event_t *e)
     snprintf(cmd_3, sizeof(cmd_3), "rm %s", file_name);
     system(cmd_3);
     system("scp output_file.ngc cnc@10.0.0.20:/home/cnc/Desktop/PortaGuide/");
+    lv_delay_ms(200);
     gpio_write(pi_num, GPIO_START_OUT, PI_HIGH); // Tell other Pi that program is starting
 }
 

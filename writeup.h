@@ -5,7 +5,7 @@
  * Information Screen *
  **********************/
 
-char info_text[] = "In the \"Information\" tab, you will find information on what this project is, how it was made, and who helped create it. In the \"Help\" tab, there are some reequently asked questions that will help you use PortaGuide."
+char info_text[] = "In the \"Information\" tab, you will find information on what this project is, how it was made, and who helped create it. In the \"Help\" tab, there are some reequently asked questions that will help you use PortaGuide.";
 
 /***********************
  * Information Writeup *
@@ -34,7 +34,7 @@ char FAQ_Q2_text[] = "How do I run one of the demos?";
 char FAQ_A2_text[] = "Demos can be run in the \"Demos\" page. We have 6 available for each attachment at this time to demonstrate a variety a different skills and difficulties.";
 
 char FAQ_Q3_text[] = "How do I run a custom program?";
-char FAQ_A2_text[] = "For this, you can load a file onto a USB flash drive and plug it into the Raspberry Pi. This will allow you to select from any of the files on the flash drive to run. *Note* This file needs to be a .ngc file that is properly formatted and terminated."
+char FAQ_A3_text[] = "For this, you can load a file onto a USB flash drive and plug it into the Raspberry Pi. This will allow you to select from any of the files on the flash drive to run. *Note* This file needs to be a .ngc file that is properly formatted and terminated.";
 
 /************
  * Tutorial *
