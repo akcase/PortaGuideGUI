@@ -207,7 +207,8 @@ static lv_obj_t *tutorial_back_label;
  * This switches between Pen and Laser demos
  */
 
-static lv_obj_t demo_screen;
+static lv_obj_t *demo_screen;
+static lv_style_t style_demo_screen;
 
 static lv_obj_t *main_label_demo_screen;
 static lv_style_t style_main_label_demo_screen;
@@ -217,6 +218,10 @@ static lv_obj_t *pen_demo_label;
 
 static lv_obj_t *laser_demo_btn;
 static lv_obj_t *laser_demo_label;
+
+static lv_obj_t *back_btn_demo_screen;
+static lv_obj_t *back_label_demo_screen;
+
 /* Styles */
 static lv_style_t style_btn_demo_screen;
 static lv_style_t style_label_demo_screen;
@@ -548,6 +553,12 @@ static void demo_pen_selected_cb(lv_event_t *e);
 static void demo_laser_selected_cb(lv_event_t *e);
 
 static void back_pressed_cb(lv_event_t *e);
+
+static void back_pen_laser_pressed_cb(lv_event_t *e);
+
+static void pen_demo_selected_cb(lv_event_t *e);
+
+static void laser_demo_selected_cb(lv_event_t *e);
 
 static void back_demo_pen_cb(lv_event_t *e);
 
@@ -1379,6 +1390,7 @@ void config_demo_screen()
     lv_obj_add_style(pen_demo_btn, &style_btn_demo_screen, 0);
     lv_obj_add_style(pen_demo_btn, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(pen_demo_btn, LV_GRID_ALIGN_STRETCH, 1, 2, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(pen_demo_btn, pen_demo_selected_cb, LV_EVENT_CLICKED, NULL);
     pen_demo_label = lv_label_create(pen_demo_btn);
     lv_obj_add_style(pen_demo_label, &style_label_demo_screen, 0);
     lv_label_set_text(pen_demo_label, "Pen Demos");
@@ -1388,6 +1400,7 @@ void config_demo_screen()
     lv_obj_add_style(laser_demo_btn, &style_btn_demo_screen, 0);
     lv_obj_add_style(laser_demo_btn, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(laser_demo_btn, LV_GRID_ALIGN_STRETCH, 4, 2, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(laser_demo_btn, laser_demo_selected_cb, LV_EVENT_CLICKED, NULL);
     laser_demo_label = lv_label_create(laser_demo_btn);
     lv_obj_add_style(laser_demo_label, &style_label_demo_screen, 0);
     lv_label_set_text(laser_demo_label, "Laser Demos");
@@ -1411,7 +1424,7 @@ void config_demo_pen_screen()
     demo_pen_screen = lv_obj_create(NULL);
     lv_obj_set_size(demo_pen_screen, 1024, 600);
     lv_obj_center(demo_pen_screen);
-    lv_obj_add_style(demo_pen_screen, &style_demo_pen_screen, 0);
+    lv_obj_add_style(demo_pen_screen, &style_demo_screen, 0);
     /* Set grid layout type */
     lv_obj_set_grid_dsc_array(demo_pen_screen, col_demo_pen_screen, row_demo_pen_screen);
     /* Remove padding around all objects to fit them closer together */
@@ -1421,7 +1434,7 @@ void config_demo_pen_screen()
     /* Main Text */
     main_label_demo_pen_screen = lv_label_create(demo_pen_screen);
     lv_obj_add_style(main_label_demo_pen_screen, &style_main_label_demo_screen, 0);
-    lv_label_set_text(main_label_demo_pen_screen, "Demos");
+    lv_label_set_text(main_label_demo_pen_screen, "Pen Demos");
     lv_obj_set_grid_cell(main_label_demo_pen_screen, LV_GRID_ALIGN_CENTER, 2, 5, LV_GRID_ALIGN_CENTER, 1, 1);
     /* Demo Button 1 */
     demo_btn_1_demo_pen_screen = lv_obj_create(demo_pen_screen);
@@ -1429,7 +1442,7 @@ void config_demo_pen_screen()
     lv_obj_add_style(demo_btn_1_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
     lv_obj_set_grid_cell(demo_btn_1_demo_pen_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
     lv_obj_add_event_cb(demo_btn_1_demo_pen_screen, demo_pen_selected_cb, LV_EVENT_CLICKED, "Line");
-    demo_label_1_demo_spen_creen = lv_label_create(demo_btn_1_demo_pen_screen);
+    demo_label_1_demo_pen_screen = lv_label_create(demo_btn_1_demo_pen_screen);
     lv_obj_add_style(demo_label_1_demo_pen_screen, &style_label_demo_screen, 0);
     lv_label_set_text(demo_label_1_demo_pen_screen, "Line");
     lv_obj_center(demo_label_1_demo_pen_screen);
@@ -1512,7 +1525,7 @@ void config_demo_laser_screen()
     /* Main Text */
     main_label_demo_laser_screen = lv_label_create(demo_laser_screen);
     lv_obj_add_style(main_label_demo_laser_screen, &style_main_label_demo_screen, 0);
-    lv_label_set_text(main_label_demo_laser_screen, "Demos");
+    lv_label_set_text(main_label_demo_laser_screen, "Laser Demos");
     lv_obj_set_grid_cell(main_label_demo_laser_screen, LV_GRID_ALIGN_CENTER, 2, 5, LV_GRID_ALIGN_CENTER, 1, 1);
     /* Demo Button 1 */
     demo_btn_1_demo_laser_screen = lv_obj_create(demo_laser_screen);
@@ -1889,7 +1902,7 @@ static void demo_pen_selected_cb(lv_event_t *e)
 {
     open_demo_pen_popup();
     char *text = lv_event_get_user_data(e);
-    lv_label_set_text(main_text_demo_popup, text);
+    lv_label_set_text(main_text_demo_pen_popup, text);
     char *description = "Basic description filler";
     // Add code to change description text here
     if (text == "Line")
@@ -1899,16 +1912,16 @@ static void demo_pen_selected_cb(lv_event_t *e)
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
         snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/LINE.ngc");
         snprintf(demo_file_name, sizeof(demo_file_name), "LINE.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        lv_label_set_text(sub_text_demo_pen_popup, description);
     }
     else if (text == "Square")
     {
         description = "This programs draws a square. It demonstrates dimensional accuracy and the ability to stop and change direction in sharp angles.";
         memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
-        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/square.ngc");
-        snprintf(demo_file_name, sizeof(demo_file_name), "square.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/SQUARE.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "SQUARE.ngc");
+        lv_label_set_text(sub_text_demo_pen_popup, description);
     }
     else if (text == "Circle")
     {
@@ -1917,7 +1930,7 @@ static void demo_pen_selected_cb(lv_event_t *e)
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
         snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/CIRCLE.ngc");
         snprintf(demo_file_name, sizeof(demo_file_name), "CIRCLE.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        lv_label_set_text(sub_text_demo_pen_popup, description);
     }
     else if (text == "Oval")
     {
@@ -1926,7 +1939,7 @@ static void demo_pen_selected_cb(lv_event_t *e)
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
         snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/OVAL.ngc");
         snprintf(demo_file_name, sizeof(demo_file_name), "OVAL.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        lv_label_set_text(sub_text_demo_pen_popup, description);
     }
     else if (text == "Star")
     {
@@ -1935,12 +1948,12 @@ static void demo_pen_selected_cb(lv_event_t *e)
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
         snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/STAR.ngc");
         snprintf(demo_file_name, sizeof(demo_file_name), "STAR.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        lv_label_set_text(sub_text_demo_pen_popup, description);
     }
     else // Complex
     {
         description = "This is a complex example that contains elements of all other demos, including curves, sharp changes in direction, and straight lines.";
-        lv_label_set_text(sub_text_demo_popup, description);
+        lv_label_set_text(sub_text_demo_pen_popup, description);
     }
 }
 
@@ -1948,7 +1961,7 @@ static void demo_laser_selected_cb(lv_event_t *e)
 {
     open_demo_laser_popup();
     char *text = lv_event_get_user_data(e);
-    lv_label_set_text(main_text_demo_popup, text);
+    lv_label_set_text(main_text_demo_laser_popup, text);
     char *description = "Basic description filler";
     // Add code to change description text here
     if (text == "Line")
@@ -1956,50 +1969,50 @@ static void demo_laser_selected_cb(lv_event_t *e)
         description = "This program draws a simple line. It demonstrates consistent speed and direction.";
         memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
-        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/LINE.ngc");
-        snprintf(demo_file_name, sizeof(demo_file_name), "LINE.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/LINE_LASER.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "LINE_LASER.ngc");
+        lv_label_set_text(sub_text_demo_laser_popup, description);
     }
     else if (text == "Square")
     {
         description = "This programs draws a square. It demonstrates dimensional accuracy and the ability to stop and change direction in sharp angles.";
         memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
-        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/square.ngc");
-        snprintf(demo_file_name, sizeof(demo_file_name), "square.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/SQUARE_LASER.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "SQUARE_LASER.ngc");
+        lv_label_set_text(sub_text_demo_laser_popup, description);
     }
     else if (text == "Circle")
     {
         description = "This program draws a circle. It demonstrates the ability to draw a consistent arc.";
         memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
-        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/CIRCLE.ngc");
-        snprintf(demo_file_name, sizeof(demo_file_name), "CIRCLE.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/CIRCLE_LASER.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "CIRCLE_LASER.ngc");
+        lv_label_set_text(sub_text_demo_laser_popup, description);
     }
     else if (text == "Oval")
     {
         description = "This program draws an oval. It demonstrates the ability to transition smoothly between arcs with different radii.";
         memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
-        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/OVAL.ngc");
-        snprintf(demo_file_name, sizeof(demo_file_name), "OVAL.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/OVAL_LASER.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "OVAL_LASER.ngc");
+        lv_label_set_text(sub_text_demo_laser_popup, description);
     }
     else if (text == "Star")
     {
         description = "This program draws star. It demonstrates many straight lines and quick direction changes.";
         memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
-        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/STAR.ngc");
-        snprintf(demo_file_name, sizeof(demo_file_name), "STAR.ngc");
-        lv_label_set_text(sub_text_demo_popup, description);
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/STAR_LASER.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "STAR_LASER.ngc");
+        lv_label_set_text(sub_text_demo_laser_popup, description);
     }
     else // Complex
     {
         description = "This is a complex example that contains elements of all other demos, including curves, sharp changes in direction, and straight lines.";
-        lv_label_set_text(sub_text_demo_popup, description);
+        lv_label_set_text(sub_text_demo_laser_popup, description);
     }
 }
 
@@ -2011,6 +2024,16 @@ static void back_pressed_cb(lv_event_t *e)
 static void back_pen_laser_pressed_cb(lv_event_t *e)
 {
     open_demo_screen();
+}
+
+static void pen_demo_selected_cb(lv_event_t *e)
+{
+    open_demo_pen_screen();
+}
+
+static void laser_demo_selected_cb(lv_event_t *e)
+{
+    open_demo_laser_screen();
 }
 
 static void back_demo_pen_cb(lv_event_t *e)
