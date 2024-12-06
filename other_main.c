@@ -35,7 +35,7 @@ void pigpiod_init()
      */
     if(set_mode(pi_num, GPIO_RUN_IN, PI_INPUT) == 0) {
         set_pull_up_down(pi_num, GPIO_RUN_IN, PI_PUD_DOWN);
-        callback(pi_num, GPIO_RUN_IN, FALLING_EDGE, program_stopped_cb);
+        callback(pi_num, GPIO_RUN_IN, RISING_EDGE, program_stopped_cb);
     } else {
         printf("Running signal not initialized\n");
     }
@@ -64,6 +64,18 @@ void pigpiod_init()
         gpio_write(pi_num, GPIO_HOMING, PI_LOW);
     } else {
         printf("Homing signal not initialized\n");
+    }
+    /**
+     * Reboot Signal
+     * From: LinuxCNC Pi
+     * To: GUI Pi
+     * High when Python script starts
+     */
+    if(set_mode(pi_num, GPIO_REBOOT_DONE, PI_INPUT) == 0) {
+        set_pull_up_down(pi_num, GPIO_REBOOT_DONE, PI_PUD_DOWN);
+        callback(pi_num, GPIO_REBOOT_DONE, RISING_EDGE, reboot_done_cb);
+    } else {
+        printf("Reboot signal not initialized\n");
     }
 }
 

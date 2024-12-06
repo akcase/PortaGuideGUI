@@ -31,7 +31,11 @@
 #define GPIO_E_STOP 22
 /* GPIO23 -> Pin 18 */
 #define GPIO_HOMING 23
+/* GPIO5 -> Pin 29 */
+#define GPIO_REBOOT_DONE 5
 
+bool cb_enabled = false;
+uint32_t num_reboot_sigs = 0;
 int pi_num = 0;
 
 LV_IMAGE_DECLARE(cloud_symbol);
@@ -683,10 +687,24 @@ void input_init()
 
 void program_stopped_cb(int pi, unsigned user_gpio, unsigned level, uint32_t tick, void *userdata)
 {
-    if (level == PI_LOW)
+    if (level == PI_HIGH)
     {
         open_program_done();
         gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
+    }
+}
+
+void reboot_done_cb(int pi, unsigned user_gpio, unsigned level, uint32_t tick, void *user)
+{
+    if (cb_enabled && (level == PI_HIGH))
+    {
+        num_reboot_sigs++;
+        if (num_reboot_sigs >= 4)
+        {
+            open_start_screen();
+            num_reboot_sigs = 0;
+            cb_enabled = false;
+        }
     }
 }
 
@@ -1842,7 +1860,7 @@ void config_homing_screen()
     lv_obj_align_to(homing_msg_1, homing_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 100);
 
     homing_msg_2 = lv_label_create(homing_screen);
-    lv_label_set_text(homing_msg_2, "When done, press the \"Complete\" button");
+    lv_label_set_text(homing_msg_2, "Program will restart after controls reboot");
     lv_obj_add_style(homing_msg_2, &style_filepath_file_confirm, 0);
     lv_obj_align_to(homing_msg_2, homing_msg_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
 
@@ -1953,6 +1971,10 @@ static void demo_pen_selected_cb(lv_event_t *e)
     else // Complex
     {
         description = "This is a complex example that contains elements of all other demos, including curves, sharp changes in direction, and straight lines.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/COMPLEX.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "COMPLEX.ngc");
         lv_label_set_text(sub_text_demo_pen_popup, description);
     }
 }
@@ -2140,7 +2162,8 @@ static void quit_program_cb(lv_event_t *e)
     gpio_write(pi_num, GPIO_E_STOP, PI_HIGH); // Activate E-Stop
     gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
     gpio_write(pi_num, GPIO_HOMING, PI_HIGH);
-    system("ssh cnc@10.0.0.20")
-    system("sudo reboot")
+    system("ssh -o StrictHostKeyChecking=no cnc@10.0.0.20 'sudo reboot'");
+    cb_enabled = true;
+    num_reboot_sigs = 0;
     open_homing_screen();
 }
