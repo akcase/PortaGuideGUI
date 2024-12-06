@@ -72,7 +72,10 @@ void config_screens()
     config_start_screen();
     config_info_screen();
     config_demo_screen();
-    config_demo_popup();
+    config_demo_pen_screen();
+    config_demo_laser_screen();
+    config_demo_pen_popup();
+    config_demo_laser_popup();
     config_new_proj_screen();
     config_file_confirm_screen();
     config_program_running();

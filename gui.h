@@ -202,7 +202,30 @@ static lv_obj_t *tutorial_back_btn;
 static lv_obj_t *tutorial_back_label;
 
 /**
- * Demo Selection Screen
+ * Demo Screen
+ * 
+ * This switches between Pen and Laser demos
+ */
+
+static lv_obj_t demo_screen;
+
+static lv_obj_t *main_label_demo_screen;
+static lv_style_t style_main_label_demo_screen;
+
+static lv_obj_t *pen_demo_btn;
+static lv_obj_t *pen_demo_label;
+
+static lv_obj_t *laser_demo_btn;
+static lv_obj_t *laser_demo_label;
+/* Styles */
+static lv_style_t style_btn_demo_screen;
+static lv_style_t style_label_demo_screen;
+/* Layout */
+static int32_t col_demo_screen[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+static int32_t row_demo_screen[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+
+/**
+ * Pen Demo Selection Screen
  *
  * This screen will be opened when "Demos" is selected from the Start
  * Screen. On the screen will be buttons, one for each demo program we
@@ -212,41 +235,81 @@ static lv_obj_t *tutorial_back_label;
  */
 
 /* Screen */
-static lv_obj_t *demo_screen;
-static lv_style_t style_demo_screen;
+static lv_obj_t *demo_pen_screen;
+static lv_style_t style_demo_pen_screen;
 /* Main Text */
-static lv_obj_t *main_label_demo_screen;
-static lv_style_t style_main_label_demo_screen;
+static lv_obj_t *main_label_demo_pen_screen;
 /* Demo Button 1 */
-static lv_obj_t *demo_btn_1_demo_screen;
-static lv_obj_t *demo_label_1_demo_screen;
+static lv_obj_t *demo_btn_1_demo_pen_screen;
+static lv_obj_t *demo_label_1_demo_pen_screen;
 /* Demo Button 2 */
-static lv_obj_t *demo_btn_2_demo_screen;
-static lv_obj_t *demo_label_2_demo_screen;
+static lv_obj_t *demo_btn_2_demo_pen_screen;
+static lv_obj_t *demo_label_2_demo_pen_screen;
 /* Demo Button 3 */
-static lv_obj_t *demo_btn_3_demo_screen;
-static lv_obj_t *demo_label_3_demo_screen;
+static lv_obj_t *demo_btn_3_demo_pen_screen;
+static lv_obj_t *demo_label_3_demo_pen_screen;
 /* Demo Button 4 */
-static lv_obj_t *demo_btn_4_demo_screen;
-static lv_obj_t *demo_label_4_demo_screen;
+static lv_obj_t *demo_btn_4_demo_pen_screen;
+static lv_obj_t *demo_label_4_demo_pen_screen;
 /* Demo Button 5 */
-static lv_obj_t *demo_btn_5_demo_screen;
-static lv_obj_t *demo_label_5_demo_screen;
+static lv_obj_t *demo_btn_5_demo_pen_screen;
+static lv_obj_t *demo_label_5_demo_pen_screen;
 /* Demo Button 6 */
-static lv_obj_t *demo_btn_6_demo_screen;
-static lv_obj_t *demo_label_6_demo_screen;
+static lv_obj_t *demo_btn_6_demo_pen_screen;
+static lv_obj_t *demo_label_6_demo_pen_screen;
 /* Back Button */
-static lv_obj_t *back_btn_demo_screen;
-static lv_obj_t *back_label_demo_screen;
-/* Styles */
-static lv_style_t style_btn_demo_screen;
-static lv_style_t style_label_demo_screen;
+static lv_obj_t *back_btn_demo_pen_screen;
+static lv_obj_t *back_label_demo_pen_screen;
 /* Layout */
-static int32_t col_demo_screen[] = {LV_GRID_FR(1), LV_GRID_FR(2), LV_GRID_FR(8), LV_GRID_FR(1), LV_GRID_FR(8), LV_GRID_FR(1), LV_GRID_FR(8), LV_GRID_FR(2), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
-static int32_t row_demo_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(2), LV_GRID_TEMPLATE_LAST};
+static int32_t col_demo_pen_screen[] = {LV_GRID_FR(1), LV_GRID_FR(2), LV_GRID_FR(8), LV_GRID_FR(1), LV_GRID_FR(8), LV_GRID_FR(1), LV_GRID_FR(8), LV_GRID_FR(2), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+static int32_t row_demo_pen_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(2), LV_GRID_TEMPLATE_LAST};
 
 /**
- * Demo Selection Popup
+ * Laser Demo Selection Screen
+ *
+ * This screen will be opened when "Demos" is selected from the Start
+ * Screen. On the screen will be buttons, one for each demo program we
+ * have made. Selecting a button will open a popup window (darken the
+ * background) with a short description of the demo, an option to start
+ * the program, and an option to go back.
+ */
+
+/* Screen */
+static lv_obj_t *demo_laser_screen;
+static lv_style_t style_demo_laser_screen;
+/* Main Text */
+static lv_obj_t *main_label_demo_laser_screen;
+/* Demo Button 1 */
+static lv_obj_t *demo_btn_1_demo_laser_screen;
+static lv_obj_t *demo_label_1_demo_laser_screen;
+/* Demo Button 2 */
+static lv_obj_t *demo_btn_2_demo_laser_screen;
+static lv_obj_t *demo_label_2_demo_laser_screen;
+/* Demo Button 3 */
+static lv_obj_t *demo_btn_3_demo_laser_screen;
+static lv_obj_t *demo_label_3_demo_laser_screen;
+/* Demo Button 4 */
+static lv_obj_t *demo_btn_4_demo_laser_screen;
+static lv_obj_t *demo_label_4_demo_laser_screen;
+/* Demo Button 5 */
+static lv_obj_t *demo_btn_5_demo_laser_screen;
+static lv_obj_t *demo_label_5_demo_laser_screen;
+/* Demo Button 6 */
+static lv_obj_t *demo_btn_6_demo_laser_screen;
+static lv_obj_t *demo_label_6_demo_laser_screen;
+/* Back Button */
+static lv_obj_t *back_btn_demo_laser_screen;
+static lv_obj_t *back_label_demo_laser_screen;
+/* Styles */
+static lv_style_t style_btn_demo_laser_screen;
+static lv_style_t style_label_demo_laser_screen;
+/* Layout */
+static int32_t col_demo_laser_screen[] = {LV_GRID_FR(1), LV_GRID_FR(2), LV_GRID_FR(8), LV_GRID_FR(1), LV_GRID_FR(8), LV_GRID_FR(1), LV_GRID_FR(8), LV_GRID_FR(2), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+static int32_t row_demo_laser_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(2), LV_GRID_TEMPLATE_LAST};
+
+
+/**
+ * Demo Pen Selection Popup
  *
  * This is the popup that will show up when you press a button on
  * the Demo Selection screen. It will take up most of the screen,
@@ -259,25 +322,54 @@ static int32_t row_demo_screen[] = {LV_GRID_FR(1), LV_GRID_FR(5), LV_GRID_FR(1),
  */
 
 /* Popup (Screen) */
-static lv_obj_t *demo_popup;
+static lv_obj_t *demo_pen_popup;
 static lv_style_t style_demo_popup;
 /* Main Text */
-static lv_obj_t *main_text_demo_popup;
+static lv_obj_t *main_text_demo_pen_popup;
 static lv_style_t style_main_text_demo_popup;
 /* Subtext */
-static lv_obj_t *sub_text_demo_popup;
+static lv_obj_t *sub_text_demo_pen_popup;
 static lv_style_t style_sub_text_demo_popup;
 /* Back Button */
-static lv_obj_t *back_btn_demo_popup;
+static lv_obj_t *back_btn_demo_pen_popup;
 static lv_style_t style_back_btn_demo_popup;
-static lv_obj_t *back_label_demo_popup;
+static lv_obj_t *back_label_demo_pen_popup;
 /* Start Button */
-static lv_obj_t *start_btn_demo_popup;
+static lv_obj_t *start_btn_demo_pen_popup;
 static lv_style_t style_start_btn_demo_popup;
-static lv_obj_t *start_label_demo_popup;
+static lv_obj_t *start_label_demo_pen_popup;
 /* Layout */
-static int32_t col_demo_popup[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
-static int32_t row_demo_popup[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+static int32_t col_demo_pen_popup[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+static int32_t row_demo_pen_popup[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+
+/**
+ * Demo Laser Selection Popup
+ *
+ * This is the popup that will show up when you press a button on
+ * the Demo Selection screen. It will take up most of the screen,
+ * but the rest of the screen will be behind the popup, but darkened.
+ *
+ * The popup will have a back button in the top left corner, similar
+ * to the other screens, a start button in the bottom right corner
+ * that will eventually start the selected program, and a description
+ * of what the program does in the middle.
+ */
+
+/* Popup (Screen) */
+static lv_obj_t *demo_laser_popup;
+/* Main Text */
+static lv_obj_t *main_text_demo_laser_popup;
+/* Subtext */
+static lv_obj_t *sub_text_demo_laser_popup;
+/* Back Button */
+static lv_obj_t *back_btn_demo_laser_popup;
+static lv_obj_t *back_label_demo_laser_popup;
+/* Start Button */
+static lv_obj_t *start_btn_demo_laser_popup;
+static lv_obj_t *start_label_demo_laser_popup;
+/* Layout */
+static int32_t col_demo_laser_popup[] = {LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_FR(9), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+static int32_t row_demo_laser_popup[] = {LV_GRID_FR(1), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(6), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 
 /**
  * New Project Screen
@@ -451,11 +543,15 @@ static void new_proj_pressed_cb(lv_event_t *e);
 
 static void demo_pressed_cb(lv_event_t *e);
 
-static void demo_selected_cb(lv_event_t *e);
+static void demo_pen_selected_cb(lv_event_t *e);
+
+static void demo_laser_selected_cb(lv_event_t *e);
 
 static void back_pressed_cb(lv_event_t *e);
 
-static void back_demo_cb(lv_event_t *e);
+static void back_demo_pen_cb(lv_event_t *e);
+
+static void back_demo_laser_cb(lv_event_t *e);
 
 static void usb_file_explorer_cb(lv_event_t *e);
 
@@ -487,11 +583,29 @@ void open_demo_screen();
 
 void config_demo_screen();
 
-/***** Demo Popup Functions *****/
+/***** Demo Pen Screen *****/
 
-void open_demo_popup();
+void open_demo_pen_screen();
 
-void config_demo_popup();
+void config_demo_pen_screen();
+
+/***** Demo Laser Screen *****/
+
+void open_demo_laser_screen();
+
+void config_demo_laser_screen();
+
+/***** Demo Pen Popup Functions *****/
+
+void open_demo_pen_popup();
+
+void config_demo_pen_popup();
+
+/***** Demo Laser Popup Functions *****/
+
+void open_demo_laser_popup();
+
+void config_demo_laser_popup();
 
 /***** Info Screen Functions *****/
 
@@ -849,9 +963,24 @@ void open_demo_screen()
     gpio_write(pi_num, GPIO_E_STOP, PI_LOW);
 }
 
-void open_demo_popup()
+void open_demo_pen_screen()
 {
-    lv_screen_load(demo_popup);
+    lv_screen_load(demo_pen_screen);
+}
+
+void open_demo_laser_screen()
+{
+    lv_screen_load(demo_laser_screen);
+}
+
+void open_demo_pen_popup()
+{
+    lv_screen_load(demo_pen_popup);
+}
+
+void open_demo_laser_popup()
+{
+    lv_screen_load(demo_laser_popup);
 }
 
 void open_new_proj_screen()
@@ -1244,67 +1373,25 @@ void config_demo_screen()
     main_label_demo_screen = lv_label_create(demo_screen);
     lv_obj_add_style(main_label_demo_screen, &style_main_label_demo_screen, 0);
     lv_label_set_text(main_label_demo_screen, "Demos");
-    lv_obj_set_grid_cell(main_label_demo_screen, LV_GRID_ALIGN_CENTER, 2, 5, LV_GRID_ALIGN_CENTER, 1, 1);
-    /* Demo Button 1 */
-    demo_btn_1_demo_screen = lv_obj_create(demo_screen);
-    lv_obj_add_style(demo_btn_1_demo_screen, &style_btn_demo_screen, 0);
-    lv_obj_add_style(demo_btn_1_demo_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(demo_btn_1_demo_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
-    lv_obj_add_event_cb(demo_btn_1_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Line");
-    demo_label_1_demo_screen = lv_label_create(demo_btn_1_demo_screen);
-    lv_obj_add_style(demo_label_1_demo_screen, &style_label_demo_screen, 0);
-    lv_label_set_text(demo_label_1_demo_screen, "Line");
-    lv_obj_center(demo_label_1_demo_screen);
-    /* Demo Button 2 */
-    demo_btn_2_demo_screen = lv_obj_create(demo_screen);
-    lv_obj_add_style(demo_btn_2_demo_screen, &style_btn_demo_screen, 0);
-    lv_obj_add_style(demo_btn_2_demo_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(demo_btn_2_demo_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
-    lv_obj_add_event_cb(demo_btn_2_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Square");
-    demo_label_2_demo_screen = lv_label_create(demo_btn_2_demo_screen);
-    lv_obj_add_style(demo_label_2_demo_screen, &style_label_demo_screen, 0);
-    lv_label_set_text(demo_label_2_demo_screen, "Square");
-    lv_obj_center(demo_label_2_demo_screen);
-    /* Demo Button 3 */
-    demo_btn_3_demo_screen = lv_obj_create(demo_screen);
-    lv_obj_add_style(demo_btn_3_demo_screen, &style_btn_demo_screen, 0);
-    lv_obj_add_style(demo_btn_3_demo_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(demo_btn_3_demo_screen, LV_GRID_ALIGN_STRETCH, 6, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
-    lv_obj_add_event_cb(demo_btn_3_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Circle");
-    demo_label_3_demo_screen = lv_label_create(demo_btn_3_demo_screen);
-    lv_obj_add_style(demo_label_3_demo_screen, &style_label_demo_screen, 0);
-    lv_label_set_text(demo_label_3_demo_screen, "Circle");
-    lv_obj_center(demo_label_3_demo_screen);
-    /* Demo Button 4 */
-    demo_btn_4_demo_screen = lv_obj_create(demo_screen);
-    lv_obj_add_style(demo_btn_4_demo_screen, &style_btn_demo_screen, 0);
-    lv_obj_add_style(demo_btn_4_demo_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(demo_btn_4_demo_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
-    lv_obj_add_event_cb(demo_btn_4_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Oval");
-    demo_label_4_demo_screen = lv_label_create(demo_btn_4_demo_screen);
-    lv_obj_add_style(demo_label_4_demo_screen, &style_label_demo_screen, 0);
-    lv_label_set_text(demo_label_4_demo_screen, "Oval");
-    lv_obj_center(demo_label_4_demo_screen);
-    /* Demo Button 5 */
-    demo_btn_5_demo_screen = lv_obj_create(demo_screen);
-    lv_obj_add_style(demo_btn_5_demo_screen, &style_btn_demo_screen, 0);
-    lv_obj_add_style(demo_btn_5_demo_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(demo_btn_5_demo_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
-    lv_obj_add_event_cb(demo_btn_5_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Star");
-    demo_label_5_demo_screen = lv_label_create(demo_btn_5_demo_screen);
-    lv_obj_add_style(demo_label_5_demo_screen, &style_label_demo_screen, 0);
-    lv_label_set_text(demo_label_5_demo_screen, "Star");
-    lv_obj_center(demo_label_5_demo_screen);
-    /* Demo Button 6 */
-    demo_btn_6_demo_screen = lv_obj_create(demo_screen);
-    lv_obj_add_style(demo_btn_6_demo_screen, &style_btn_demo_screen, 0);
-    lv_obj_add_style(demo_btn_6_demo_screen, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(demo_btn_6_demo_screen, LV_GRID_ALIGN_STRETCH, 6, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
-    lv_obj_add_event_cb(demo_btn_6_demo_screen, demo_selected_cb, LV_EVENT_CLICKED, "Complex");
-    demo_label_6_demo_screen = lv_label_create(demo_btn_6_demo_screen);
-    lv_obj_add_style(demo_label_6_demo_screen, &style_label_demo_screen, 0);
-    lv_label_set_text(demo_label_6_demo_screen, "Complex");
-    lv_obj_center(demo_label_6_demo_screen);
+    lv_obj_set_grid_cell(main_label_demo_screen, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_CENTER, 1, 1);
+    /* Pen Select Button */
+    pen_demo_btn = lv_obj_create(demo_screen);
+    lv_obj_add_style(pen_demo_btn, &style_btn_demo_screen, 0);
+    lv_obj_add_style(pen_demo_btn, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(pen_demo_btn, LV_GRID_ALIGN_STRETCH, 1, 2, LV_GRID_ALIGN_STRETCH, 3, 1);
+    pen_demo_label = lv_label_create(pen_demo_btn);
+    lv_obj_add_style(pen_demo_label, &style_label_demo_screen, 0);
+    lv_label_set_text(pen_demo_label, "Pen Demos");
+    lv_obj_center(pen_demo_label);
+    /* Laser Select Button */
+    laser_demo_btn = lv_obj_create(demo_screen);
+    lv_obj_add_style(laser_demo_btn, &style_btn_demo_screen, 0);
+    lv_obj_add_style(laser_demo_btn, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(laser_demo_btn, LV_GRID_ALIGN_STRETCH, 4, 2, LV_GRID_ALIGN_STRETCH, 3, 1);
+    laser_demo_label = lv_label_create(laser_demo_btn);
+    lv_obj_add_style(laser_demo_label, &style_label_demo_screen, 0);
+    lv_label_set_text(laser_demo_label, "Laser Demos");
+    lv_obj_center(laser_demo_label);
     /* Back Button */
     back_btn_demo_screen = lv_obj_create(demo_screen);
     lv_obj_add_style(back_btn_demo_screen, &style_btn_demo_screen, 0);
@@ -1318,52 +1405,282 @@ void config_demo_screen()
     lv_obj_center(back_label_demo_screen);
 }
 
-void config_demo_popup()
+void config_demo_pen_screen()
 {
     /* Configure Screen */
-    demo_popup = lv_obj_create(NULL);
-    lv_obj_set_size(demo_popup, 1024, 600);
-    lv_obj_center(demo_popup);
-    lv_obj_add_style(demo_popup, &style_demo_popup, 0);
+    demo_pen_screen = lv_obj_create(NULL);
+    lv_obj_set_size(demo_pen_screen, 1024, 600);
+    lv_obj_center(demo_pen_screen);
+    lv_obj_add_style(demo_pen_screen, &style_demo_pen_screen, 0);
     /* Set grid layout type */
-    lv_obj_set_grid_dsc_array(demo_popup, col_demo_popup, row_demo_popup);
+    lv_obj_set_grid_dsc_array(demo_pen_screen, col_demo_pen_screen, row_demo_pen_screen);
     /* Remove padding around all objects to fit them closer together */
-    lv_obj_set_style_pad_all(demo_popup, 0, 0);
-    lv_obj_set_style_pad_column(demo_popup, 0, 0);
-    lv_obj_set_style_pad_row(demo_popup, 0, 0);
+    lv_obj_set_style_pad_all(demo_pen_screen, 0, 0);
+    lv_obj_set_style_pad_column(demo_pen_screen, 0, 0);
+    lv_obj_set_style_pad_row(demo_pen_screen, 0, 0);
     /* Main Text */
-    main_text_demo_popup = lv_label_create(demo_popup);
-    lv_obj_add_style(main_text_demo_popup, &style_main_text_demo_popup, 0);
-    lv_obj_set_grid_cell(main_text_demo_popup, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_CENTER, 1, 1);
+    main_label_demo_pen_screen = lv_label_create(demo_pen_screen);
+    lv_obj_add_style(main_label_demo_pen_screen, &style_main_label_demo_screen, 0);
+    lv_label_set_text(main_label_demo_pen_screen, "Demos");
+    lv_obj_set_grid_cell(main_label_demo_pen_screen, LV_GRID_ALIGN_CENTER, 2, 5, LV_GRID_ALIGN_CENTER, 1, 1);
+    /* Demo Button 1 */
+    demo_btn_1_demo_pen_screen = lv_obj_create(demo_pen_screen);
+    lv_obj_add_style(demo_btn_1_demo_pen_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_1_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_1_demo_pen_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(demo_btn_1_demo_pen_screen, demo_pen_selected_cb, LV_EVENT_CLICKED, "Line");
+    demo_label_1_demo_spen_creen = lv_label_create(demo_btn_1_demo_pen_screen);
+    lv_obj_add_style(demo_label_1_demo_pen_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_1_demo_pen_screen, "Line");
+    lv_obj_center(demo_label_1_demo_pen_screen);
+    /* Demo Button 2 */
+    demo_btn_2_demo_pen_screen = lv_obj_create(demo_pen_screen);
+    lv_obj_add_style(demo_btn_2_demo_pen_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_2_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_2_demo_pen_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(demo_btn_2_demo_pen_screen, demo_pen_selected_cb, LV_EVENT_CLICKED, "Square");
+    demo_label_2_demo_pen_screen = lv_label_create(demo_btn_2_demo_pen_screen);
+    lv_obj_add_style(demo_label_2_demo_pen_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_2_demo_pen_screen, "Square");
+    lv_obj_center(demo_label_2_demo_pen_screen);
+    /* Demo Button 3 */
+    demo_btn_3_demo_pen_screen = lv_obj_create(demo_pen_screen);
+    lv_obj_add_style(demo_btn_3_demo_pen_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_3_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_3_demo_pen_screen, LV_GRID_ALIGN_STRETCH, 6, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(demo_btn_3_demo_pen_screen, demo_pen_selected_cb, LV_EVENT_CLICKED, "Circle");
+    demo_label_3_demo_pen_screen = lv_label_create(demo_btn_3_demo_pen_screen);
+    lv_obj_add_style(demo_label_3_demo_pen_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_3_demo_pen_screen, "Circle");
+    lv_obj_center(demo_label_3_demo_pen_screen);
+    /* Demo Button 4 */
+    demo_btn_4_demo_pen_screen = lv_obj_create(demo_pen_screen);
+    lv_obj_add_style(demo_btn_4_demo_pen_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_4_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_4_demo_pen_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
+    lv_obj_add_event_cb(demo_btn_4_demo_pen_screen, demo_pen_selected_cb, LV_EVENT_CLICKED, "Oval");
+    demo_label_4_demo_pen_screen = lv_label_create(demo_btn_4_demo_pen_screen);
+    lv_obj_add_style(demo_label_4_demo_pen_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_4_demo_pen_screen, "Oval");
+    lv_obj_center(demo_label_4_demo_pen_screen);
+    /* Demo Button 5 */
+    demo_btn_5_demo_pen_screen = lv_obj_create(demo_pen_screen);
+    lv_obj_add_style(demo_btn_5_demo_pen_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_5_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_5_demo_pen_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
+    lv_obj_add_event_cb(demo_btn_5_demo_pen_screen, demo_pen_selected_cb, LV_EVENT_CLICKED, "Star");
+    demo_label_5_demo_pen_screen = lv_label_create(demo_btn_5_demo_pen_screen);
+    lv_obj_add_style(demo_label_5_demo_pen_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_5_demo_pen_screen, "Star");
+    lv_obj_center(demo_label_5_demo_pen_screen);
+    /* Demo Button 6 */
+    demo_btn_6_demo_pen_screen = lv_obj_create(demo_pen_screen);
+    lv_obj_add_style(demo_btn_6_demo_pen_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_6_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_6_demo_pen_screen, LV_GRID_ALIGN_STRETCH, 6, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
+    lv_obj_add_event_cb(demo_btn_6_demo_pen_screen, demo_pen_selected_cb, LV_EVENT_CLICKED, "Complex");
+    demo_label_6_demo_pen_screen = lv_label_create(demo_btn_6_demo_pen_screen);
+    lv_obj_add_style(demo_label_6_demo_pen_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_6_demo_pen_screen, "Complex");
+    lv_obj_center(demo_label_6_demo_pen_screen);
+    /* Back Button */
+    back_btn_demo_pen_screen = lv_obj_create(demo_pen_screen);
+    lv_obj_add_style(back_btn_demo_pen_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(back_btn_demo_pen_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(back_btn_demo_pen_screen, LV_GRID_ALIGN_START, 1, 1, LV_GRID_ALIGN_START, 1, 1);
+    lv_obj_set_size(back_btn_demo_pen_screen, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_add_event_cb(back_btn_demo_pen_screen, back_pen_laser_pressed_cb, LV_EVENT_CLICKED, NULL);
+    back_label_demo_pen_screen = lv_label_create(back_btn_demo_pen_screen);
+    lv_obj_add_style(back_label_demo_pen_screen, &style_back_label, 0);
+    lv_label_set_text(back_label_demo_pen_screen, "Back");
+    lv_obj_center(back_label_demo_pen_screen);
+}
+
+void config_demo_laser_screen()
+{
+    /* Configure Screen */
+    demo_laser_screen = lv_obj_create(NULL);
+    lv_obj_set_size(demo_laser_screen, 1024, 600);
+    lv_obj_center(demo_laser_screen);
+    lv_obj_add_style(demo_laser_screen, &style_demo_screen, 0);
+    /* Set grid layout type */
+    lv_obj_set_grid_dsc_array(demo_laser_screen, col_demo_laser_screen, row_demo_laser_screen);
+    /* Remove padding around all objects to fit them closer together */
+    lv_obj_set_style_pad_all(demo_laser_screen, 0, 0);
+    lv_obj_set_style_pad_column(demo_laser_screen, 0, 0);
+    lv_obj_set_style_pad_row(demo_laser_screen, 0, 0);
+    /* Main Text */
+    main_label_demo_laser_screen = lv_label_create(demo_laser_screen);
+    lv_obj_add_style(main_label_demo_laser_screen, &style_main_label_demo_screen, 0);
+    lv_label_set_text(main_label_demo_laser_screen, "Demos");
+    lv_obj_set_grid_cell(main_label_demo_laser_screen, LV_GRID_ALIGN_CENTER, 2, 5, LV_GRID_ALIGN_CENTER, 1, 1);
+    /* Demo Button 1 */
+    demo_btn_1_demo_laser_screen = lv_obj_create(demo_laser_screen);
+    lv_obj_add_style(demo_btn_1_demo_laser_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_1_demo_laser_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_1_demo_laser_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(demo_btn_1_demo_laser_screen, demo_laser_selected_cb, LV_EVENT_CLICKED, "Line");
+    demo_label_1_demo_laser_screen = lv_label_create(demo_btn_1_demo_laser_screen);
+    lv_obj_add_style(demo_label_1_demo_laser_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_1_demo_laser_screen, "Line");
+    lv_obj_center(demo_label_1_demo_laser_screen);
+    /* Demo Button 2 */
+    demo_btn_2_demo_laser_screen = lv_obj_create(demo_laser_screen);
+    lv_obj_add_style(demo_btn_2_demo_laser_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_2_demo_laser_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_2_demo_laser_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(demo_btn_2_demo_laser_screen, demo_laser_selected_cb, LV_EVENT_CLICKED, "Square");
+    demo_label_2_demo_laser_screen = lv_label_create(demo_btn_2_demo_laser_screen);
+    lv_obj_add_style(demo_label_2_demo_laser_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_2_demo_laser_screen, "Square");
+    lv_obj_center(demo_label_2_demo_laser_screen);
+    /* Demo Button 3 */
+    demo_btn_3_demo_laser_screen = lv_obj_create(demo_laser_screen);
+    lv_obj_add_style(demo_btn_3_demo_laser_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_3_demo_laser_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_3_demo_laser_screen, LV_GRID_ALIGN_STRETCH, 6, 1, LV_GRID_ALIGN_STRETCH, 3, 1);
+    lv_obj_add_event_cb(demo_btn_3_demo_laser_screen, demo_laser_selected_cb, LV_EVENT_CLICKED, "Circle");
+    demo_label_3_demo_laser_screen = lv_label_create(demo_btn_3_demo_laser_screen);
+    lv_obj_add_style(demo_label_3_demo_laser_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_3_demo_laser_screen, "Circle");
+    lv_obj_center(demo_label_3_demo_laser_screen);
+    /* Demo Button 4 */
+    demo_btn_4_demo_laser_screen = lv_obj_create(demo_laser_screen);
+    lv_obj_add_style(demo_btn_4_demo_laser_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_4_demo_laser_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_4_demo_laser_screen, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
+    lv_obj_add_event_cb(demo_btn_4_demo_laser_screen, demo_laser_selected_cb, LV_EVENT_CLICKED, "Oval");
+    demo_label_4_demo_laser_screen = lv_label_create(demo_btn_4_demo_laser_screen);
+    lv_obj_add_style(demo_label_4_demo_laser_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_4_demo_laser_screen, "Oval");
+    lv_obj_center(demo_label_4_demo_laser_screen);
+    /* Demo Button 5 */
+    demo_btn_5_demo_laser_screen = lv_obj_create(demo_laser_screen);
+    lv_obj_add_style(demo_btn_5_demo_laser_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_5_demo_laser_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_5_demo_laser_screen, LV_GRID_ALIGN_STRETCH, 4, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
+    lv_obj_add_event_cb(demo_btn_5_demo_laser_screen, demo_laser_selected_cb, LV_EVENT_CLICKED, "Star");
+    demo_label_5_demo_laser_screen = lv_label_create(demo_btn_5_demo_laser_screen);
+    lv_obj_add_style(demo_label_5_demo_laser_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_5_demo_laser_screen, "Star");
+    lv_obj_center(demo_label_5_demo_laser_screen);
+    /* Demo Button 6 */
+    demo_btn_6_demo_laser_screen = lv_obj_create(demo_laser_screen);
+    lv_obj_add_style(demo_btn_6_demo_laser_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(demo_btn_6_demo_laser_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(demo_btn_6_demo_laser_screen, LV_GRID_ALIGN_STRETCH, 6, 1, LV_GRID_ALIGN_STRETCH, 5, 1);
+    lv_obj_add_event_cb(demo_btn_6_demo_laser_screen, demo_laser_selected_cb, LV_EVENT_CLICKED, "Complex");
+    demo_label_6_demo_laser_screen = lv_label_create(demo_btn_6_demo_laser_screen);
+    lv_obj_add_style(demo_label_6_demo_laser_screen, &style_label_demo_screen, 0);
+    lv_label_set_text(demo_label_6_demo_laser_screen, "Complex");
+    lv_obj_center(demo_label_6_demo_laser_screen);
+    /* Back Button */
+    back_btn_demo_laser_screen = lv_obj_create(demo_laser_screen);
+    lv_obj_add_style(back_btn_demo_laser_screen, &style_btn_demo_screen, 0);
+    lv_obj_add_style(back_btn_demo_laser_screen, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(back_btn_demo_laser_screen, LV_GRID_ALIGN_START, 1, 1, LV_GRID_ALIGN_START, 1, 1);
+    lv_obj_set_size(back_btn_demo_laser_screen, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_add_event_cb(back_btn_demo_laser_screen, back_pen_laser_pressed_cb, LV_EVENT_CLICKED, NULL);
+    back_label_demo_laser_screen = lv_label_create(back_btn_demo_laser_screen);
+    lv_obj_add_style(back_label_demo_laser_screen, &style_back_label, 0);
+    lv_label_set_text(back_label_demo_laser_screen, "Back");
+    lv_obj_center(back_label_demo_laser_screen);
+}
+
+void config_demo_laser_popup()
+{
+    /* Configure Screen */
+    demo_laser_popup = lv_obj_create(NULL);
+    lv_obj_set_size(demo_laser_popup, 1024, 600);
+    lv_obj_center(demo_laser_popup);
+    lv_obj_add_style(demo_laser_popup, &style_demo_popup, 0);
+    /* Set grid layout type */
+    lv_obj_set_grid_dsc_array(demo_laser_popup, col_demo_laser_popup, row_demo_laser_popup);
+    /* Remove padding around all objects to fit them closer together */
+    lv_obj_set_style_pad_all(demo_laser_popup, 0, 0);
+    lv_obj_set_style_pad_column(demo_laser_popup, 0, 0);
+    lv_obj_set_style_pad_row(demo_laser_popup, 0, 0);
+    /* Main Text */
+    main_text_demo_laser_popup = lv_label_create(demo_laser_popup);
+    lv_obj_add_style(main_text_demo_laser_popup, &style_main_text_demo_popup, 0);
+    lv_obj_set_grid_cell(main_text_demo_laser_popup, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_CENTER, 1, 1);
     /* Subtext */
-    sub_text_demo_popup = lv_label_create(demo_popup);
-    lv_obj_add_style(sub_text_demo_popup, &style_sub_text_demo_popup, 0);
-    lv_obj_set_width(sub_text_demo_popup, 700);
-    lv_obj_set_grid_cell(sub_text_demo_popup, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_CENTER, 2, 1);
-    lv_label_set_text(sub_text_demo_popup, "This is an example description");
+    sub_text_demo_laser_popup = lv_label_create(demo_laser_popup);
+    lv_obj_add_style(sub_text_demo_laser_popup, &style_sub_text_demo_popup, 0);
+    lv_obj_set_width(sub_text_demo_laser_popup, 700);
+    lv_obj_set_grid_cell(sub_text_demo_laser_popup, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_CENTER, 2, 1);
+    lv_label_set_text(sub_text_demo_laser_popup, "This is an example description");
     lv_label_set_long_mode(sub_label_info_screen, LV_LABEL_LONG_WRAP);
     /* Back Button */
-    back_btn_demo_popup = lv_obj_create(demo_popup);
-    lv_obj_add_style(back_btn_demo_popup, &style_back_btn_demo_popup, 0);
-    lv_obj_add_style(back_btn_demo_popup, &style_btn_pressed, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(back_btn_demo_popup, LV_GRID_ALIGN_START, 1, 1, LV_GRID_ALIGN_START, 1, 1);
-    lv_obj_set_size(back_btn_demo_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
-    lv_obj_add_event_cb(back_btn_demo_popup, back_demo_cb, LV_EVENT_CLICKED, NULL);
-    back_label_demo_popup = lv_label_create(back_btn_demo_popup);
-    lv_obj_add_style(back_label_demo_popup, &style_back_label, 0);
-    lv_label_set_text(back_label_demo_popup, "Back");
-    lv_obj_center(back_label_demo_popup);
+    back_btn_demo_laser_popup = lv_obj_create(demo_laser_popup);
+    lv_obj_add_style(back_btn_demo_laser_popup, &style_back_btn_demo_popup, 0);
+    lv_obj_add_style(back_btn_demo_laser_popup, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(back_btn_demo_laser_popup, LV_GRID_ALIGN_START, 1, 1, LV_GRID_ALIGN_START, 1, 1);
+    lv_obj_set_size(back_btn_demo_laser_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_add_event_cb(back_btn_demo_laser_popup, back_demo_laser_cb, LV_EVENT_CLICKED, NULL);
+    back_label_demo_laser_popup = lv_label_create(back_btn_demo_laser_popup);
+    lv_obj_add_style(back_label_demo_laser_popup, &style_back_label, 0);
+    lv_label_set_text(back_label_demo_laser_popup, "Back");
+    lv_obj_center(back_label_demo_laser_popup);
     /* Start Button */
-    start_btn_demo_popup = lv_obj_create(demo_popup);
-    lv_obj_add_style(start_btn_demo_popup, &style_start_btn_demo_popup, 0);
-    lv_obj_add_style(start_btn_demo_popup, &style_start_btn_demo_popup, LV_STATE_PRESSED);
-    lv_obj_set_grid_cell(start_btn_demo_popup, LV_GRID_ALIGN_END, 5, 1, LV_GRID_ALIGN_END, 3, 1);
-    lv_obj_set_size(start_btn_demo_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
-    lv_obj_add_event_cb(start_btn_demo_popup, start_demo_program_cb, LV_EVENT_CLICKED, NULL);
-    start_label_demo_popup = lv_label_create(start_btn_demo_popup);
-    lv_obj_add_style(start_label_demo_popup, &style_back_label, 0);
-    lv_label_set_text(start_label_demo_popup, "Start");
-    lv_obj_center(start_label_demo_popup);
+    start_btn_demo_laser_popup = lv_obj_create(demo_laser_popup);
+    lv_obj_add_style(start_btn_demo_laser_popup, &style_start_btn_demo_popup, 0);
+    lv_obj_add_style(start_btn_demo_laser_popup, &style_start_btn_demo_popup, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(start_btn_demo_laser_popup, LV_GRID_ALIGN_END, 5, 1, LV_GRID_ALIGN_END, 3, 1);
+    lv_obj_set_size(start_btn_demo_laser_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_add_event_cb(start_btn_demo_laser_popup, start_demo_program_cb, LV_EVENT_CLICKED, NULL);
+    start_label_demo_laser_popup = lv_label_create(start_btn_demo_laser_popup);
+    lv_obj_add_style(start_label_demo_laser_popup, &style_back_label, 0);
+    lv_label_set_text(start_label_demo_laser_popup, "Start");
+    lv_obj_center(start_label_demo_laser_popup);
+}
+
+void config_demo_pen_popup()
+{
+    /* Configure Screen */
+    demo_pen_popup = lv_obj_create(NULL);
+    lv_obj_set_size(demo_pen_popup, 1024, 600);
+    lv_obj_center(demo_pen_popup);
+    lv_obj_add_style(demo_pen_popup, &style_demo_popup, 0);
+    /* Set grid layout type */
+    lv_obj_set_grid_dsc_array(demo_pen_popup, col_demo_pen_popup, row_demo_pen_popup);
+    /* Remove padding around all objects to fit them closer together */
+    lv_obj_set_style_pad_all(demo_pen_popup, 0, 0);
+    lv_obj_set_style_pad_column(demo_pen_popup, 0, 0);
+    lv_obj_set_style_pad_row(demo_pen_popup, 0, 0);
+    /* Main Text */
+    main_text_demo_pen_popup = lv_label_create(demo_pen_popup);
+    lv_obj_add_style(main_text_demo_pen_popup, &style_main_text_demo_popup, 0);
+    lv_obj_set_grid_cell(main_text_demo_pen_popup, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_CENTER, 1, 1);
+    /* Subtext */
+    sub_text_demo_pen_popup = lv_label_create(demo_pen_popup);
+    lv_obj_add_style(sub_text_demo_pen_popup, &style_sub_text_demo_popup, 0);
+    lv_obj_set_width(sub_text_demo_pen_popup, 700);
+    lv_obj_set_grid_cell(sub_text_demo_pen_popup, LV_GRID_ALIGN_CENTER, 1, 5, LV_GRID_ALIGN_CENTER, 2, 1);
+    lv_label_set_text(sub_text_demo_pen_popup, "This is an example description");
+    lv_label_set_long_mode(sub_label_info_screen, LV_LABEL_LONG_WRAP);
+    /* Back Button */
+    back_btn_demo_pen_popup = lv_obj_create(demo_pen_popup);
+    lv_obj_add_style(back_btn_demo_pen_popup, &style_back_btn_demo_popup, 0);
+    lv_obj_add_style(back_btn_demo_pen_popup, &style_btn_pressed, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(back_btn_demo_pen_popup, LV_GRID_ALIGN_START, 1, 1, LV_GRID_ALIGN_START, 1, 1);
+    lv_obj_set_size(back_btn_demo_pen_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_add_event_cb(back_btn_demo_pen_popup, back_demo_pen_cb, LV_EVENT_CLICKED, NULL);
+    back_label_demo_pen_popup = lv_label_create(back_btn_demo_pen_popup);
+    lv_obj_add_style(back_label_demo_pen_popup, &style_back_label, 0);
+    lv_label_set_text(back_label_demo_pen_popup, "Back");
+    lv_obj_center(back_label_demo_pen_popup);
+    /* Start Button */
+    start_btn_demo_pen_popup = lv_obj_create(demo_pen_popup);
+    lv_obj_add_style(start_btn_demo_pen_popup, &style_start_btn_demo_popup, 0);
+    lv_obj_add_style(start_btn_demo_pen_popup, &style_start_btn_demo_popup, LV_STATE_PRESSED);
+    lv_obj_set_grid_cell(start_btn_demo_pen_popup, LV_GRID_ALIGN_END, 5, 1, LV_GRID_ALIGN_END, 3, 1);
+    lv_obj_set_size(start_btn_demo_pen_popup, BACK_BTN_HORZ, BACK_BTN_VERT);
+    lv_obj_add_event_cb(start_btn_demo_pen_popup, start_demo_program_cb, LV_EVENT_CLICKED, NULL);
+    start_label_demo_pen_popup = lv_label_create(start_btn_demo_pen_popup);
+    lv_obj_add_style(start_label_demo_pen_popup, &style_back_label, 0);
+    lv_label_set_text(start_label_demo_pen_popup, "Start");
+    lv_obj_center(start_label_demo_pen_popup);
 }
 
 void config_new_proj_screen()
@@ -1568,9 +1885,9 @@ static void demo_pressed_cb(lv_event_t *e)
     open_demo_screen();
 }
 
-static void demo_selected_cb(lv_event_t *e)
+static void demo_pen_selected_cb(lv_event_t *e)
 {
-    open_demo_popup();
+    open_demo_pen_popup();
     char *text = lv_event_get_user_data(e);
     lv_label_set_text(main_text_demo_popup, text);
     char *description = "Basic description filler";
@@ -1613,7 +1930,66 @@ static void demo_selected_cb(lv_event_t *e)
     }
     else if (text == "Star")
     {
-        description = "This program draws a basic signature. It demonstrates smooth lines with complex geometry.";
+        description = "This program draws star. It demonstrates many straight lines and quick direction changes.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/STAR.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "STAR.ngc");
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else // Complex
+    {
+        description = "This is a complex example that contains elements of all other demos, including curves, sharp changes in direction, and straight lines.";
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+}
+
+static void demo_laser_selected_cb(lv_event_t *e)
+{
+    open_demo_laser_popup();
+    char *text = lv_event_get_user_data(e);
+    lv_label_set_text(main_text_demo_popup, text);
+    char *description = "Basic description filler";
+    // Add code to change description text here
+    if (text == "Line")
+    {
+        description = "This program draws a simple line. It demonstrates consistent speed and direction.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/LINE.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "LINE.ngc");
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Square")
+    {
+        description = "This programs draws a square. It demonstrates dimensional accuracy and the ability to stop and change direction in sharp angles.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/square.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "square.ngc");
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Circle")
+    {
+        description = "This program draws a circle. It demonstrates the ability to draw a consistent arc.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/CIRCLE.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "CIRCLE.ngc");
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Oval")
+    {
+        description = "This program draws an oval. It demonstrates the ability to transition smoothly between arcs with different radii.";
+        memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
+        memset(&demo_file_name[0], 0, sizeof(demo_file_name));
+        snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/OVAL.ngc");
+        snprintf(demo_file_name, sizeof(demo_file_name), "OVAL.ngc");
+        lv_label_set_text(sub_text_demo_popup, description);
+    }
+    else if (text == "Star")
+    {
+        description = "This program draws star. It demonstrates many straight lines and quick direction changes.";
         memset(&demo_file_path_and_name[0], 0, sizeof(demo_file_path_and_name));
         memset(&demo_file_name[0], 0, sizeof(demo_file_name));
         snprintf(demo_file_path_and_name, sizeof(demo_file_path_and_name), "~/PG_Demos/STAR.ngc");
@@ -1632,9 +2008,19 @@ static void back_pressed_cb(lv_event_t *e)
     open_start_screen();
 }
 
-static void back_demo_cb(lv_event_t *e)
+static void back_pen_laser_pressed_cb(lv_event_t *e)
 {
     open_demo_screen();
+}
+
+static void back_demo_pen_cb(lv_event_t *e)
+{
+    open_demo_pen_screen();
+}
+
+static void back_demo_laser_cb(lv_event_t *e)
+{
+    open_demo_laser_screen();
 }
 
 static void usb_file_explorer_cb(lv_event_t *e)
