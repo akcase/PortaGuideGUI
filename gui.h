@@ -2140,5 +2140,7 @@ static void quit_program_cb(lv_event_t *e)
     gpio_write(pi_num, GPIO_E_STOP, PI_HIGH); // Activate E-Stop
     gpio_write(pi_num, GPIO_START_OUT, PI_LOW);
     gpio_write(pi_num, GPIO_HOMING, PI_HIGH);
+    system("ssh cnc@10.0.0.20")
+    system("sudo reboot")
     open_homing_screen();
 }
